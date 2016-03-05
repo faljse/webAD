@@ -14,8 +14,8 @@
   
   <script type="text/javascript" src="../../libs/menu.js"></script>
 
-  <script src="../../libs/views/trees/binaryTree.js"></script>
-  <script src="../../libs/models/trees/bst.js"></script>
+  <script src="../../libs/views/trees/TwoThreeFour.js"></script>
+  <script src="../../libs/models/trees/TwoThreeFour.js"></script>
 </head>
 
 <script>
@@ -24,7 +24,7 @@
 		
 		function init(){
 			var c1 = document.getElementById("container1");
-			tree = new TwoThreeFourView();
+			tree = new TwoThreeFour();
 			tree.view.initStage(c1);
 			tree.init();
 		}
