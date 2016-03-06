@@ -119,6 +119,9 @@ TwoThreeFour.prototype.prev=function(){
 }
 
 TwoThreeFour.prototype.next=function(){
+	for(var i=0;i<12;i++)
+		add(i);
+
 }
 
 TwoThreeFour.prototype.firstState=function(){
@@ -139,7 +142,7 @@ TwoThreeFour.prototype.insertNode=function(node, value) {
 	if(node.children.length==0) //unterste ebene
 	{
 		node.insertIndex(value);
-		if(node.values.length>this.N*2-1) //noch platz im index
+		if(node.values.length>this.N*2) //overflow->split
 		{
 			newNode=node.split();
 			if(newNode!=null&&node==this.root)
@@ -165,8 +168,9 @@ TwoThreeFour.prototype.insertNode=function(node, value) {
 	return newNode;
 }
 
-TwoThreeFour.prototype.add=function() {
-	var val=parseInt(prompt("Add:"));
+TwoThreeFour.prototype.add=function(val) {
+	if(val==undefined)
+		var val=parseInt(prompt("Add:"));
 	if(isNaN(val))return;
 	var node=new Node();
 	node.value=val;

@@ -58,7 +58,7 @@ TwoThreeFourView.prototype.draw=function(){
 	{
 		for(var i=0;i<node.values.length;i++)
 		{
-			var textX=100+i*50+50*(col*Math.pow(model.N,row));
+			var textX=100+i*25+25*(col *model.N*2);
 			var textY=row*50+100;
 			var text = new Kinetic.Text({
 				y: textY,
@@ -84,7 +84,7 @@ TwoThreeFourView.prototype.draw=function(){
 
 		for(var i=0;i<node.children.length;i++)
 		{
-			bla(node.children[i], row+1, col+i, 100+i*50 +25*(col*Math.pow(model.N,row)), row*50+100);
+			bla(node.children[i], row+1, col*model.N*2+i, 100+i*50 +25*(col*Math.pow(model.N,row)), row*50+100);
 
 		}
 	}
