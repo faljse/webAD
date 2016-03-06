@@ -361,7 +361,7 @@ WeightedDirectedGraph.prototype.saveInDB=function(){
  	}
 
 	var nextID=this.db.length;
-	var new_state = this.copy(this);
+	var new_state = this.copy();
 	
 	var last_state=this.db[this.db.length-1];
 	var same=true;
@@ -403,6 +403,7 @@ WeightedDirectedGraph.prototype.saveInDB=function(){
 }
 
 WeightedDirectedGraph.prototype.dijkstra=function(){
+	//[25]
 	var delay=2000;
 	//Q, uSet, i, dist, prev, S
 	if(this.Q==undefined || this.Q.length==0){

@@ -27,19 +27,18 @@ function Vector(){
 
 Vector.prototype.init=function(){
 	this.elements=[];
-	this.finished=false;
 	this.i=0;
 	this.j=0;
 	this.speed=5;
-	this.paused=false;
+	this.paused=true;
 	this.finished=false;
 	
 	this.col1="#00FF80";
 	this.col2="#FF0000";
 	this.col3="#F7D358";
 	this.col4="#CC2EFA";
-	
-	this.saveInDB();
+	if(this.actStateID!=-1)
+		this.saveInDB();
 }
 
 Vector.prototype.saveInDB=function(){
@@ -50,7 +49,7 @@ Vector.prototype.saveInDB=function(){
 
 	var nextID=this.db.length;
 	
-	var new_state = this.copy(this);
+	var new_state = this.copy();
 	var last_state=this.db[this.db.length-1];
 	var same=true;
 	
@@ -73,24 +72,24 @@ Vector.prototype.saveInDB=function(){
 	}
 }
 
-Vector.prototype.copy=function(toCopy){
+Vector.prototype.copy=function(){
 	var newVector=new Vector();
-	newVector.finished=toCopy.finished;
-	newVector.i=toCopy.i;
-	newVector.j=toCopy.j;
+	newVector.finished=this.finished;
+	newVector.i=this.i;
+	newVector.j=this.j;
 	
-	newVector.col1=toCopy.col1;
-	newVector.col2=toCopy.col2;
-	newVector.col3=toCopy.col3;
-	newVector.col4=toCopy.col4;
+	newVector.col1=this.col1;
+	newVector.col2=this.col2;
+	newVector.col3=this.col3;
+	newVector.col4=this.col4;
 	
 	newVector.paused=true;
-	newVector.swapflag=toCopy.swapflag;
-	newVector.speed=toCopy.speed;
+	newVector.swapflag=this.swapflag;
+	newVector.speed=this.speed;
 	newVector.elements=[];
-	for(var i=0;i<toCopy.elements.length;i++){
-		newVector.elements.push(new Element(toCopy.elements[i].value));
-		newVector.elements[i].color=toCopy.elements[i].color;
+	for(var i=0;i<this.elements.length;i++){
+		newVector.elements.push(new Element(this.elements[i].value));
+		newVector.elements[i].color=this.elements[i].color;
 	}
 	return newVector;
 }
@@ -224,6 +223,7 @@ Vector.prototype.bubbleSort=function(){
 		this.setColorsBubbleSort();
 		this.draw();
 		this.saveInDB();
+		clearTimes();
 		return;
 	}
 	
@@ -271,6 +271,9 @@ Vector.prototype.bubbleSort=function(){
           								 vector.setColorsBubbleSort();
 	          							 vector.saveInDB();
 	          							 vector.draw();
+	          							 
+	          							//change the button. better way?
+	          							 clearTimes();
           							 }
           							 
       							 	},100*vector.speed)

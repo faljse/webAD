@@ -37,6 +37,7 @@
 	}
  
 	function clearTimes(){
+		//[30]
 		var pids = window.setTimeout(function() {}, 0);
 
 		while (pids--) {
@@ -150,13 +151,13 @@
 		<a href="#" class="z2" onclick="zoomOut();return false;"></a>
 		<a href="#" class="z1" onclick="zoomIn();return false;"></a>
 	</div>
-	webAD is a web-based system designed for simple and intuitive learning of Algorithms and Datastrures. For further questions please contact: <a href="mailto:begy.volodimir@gmail.com">begy.volodimir@gmail.com</a>
+	webAD is a web-based system designed for simple and intuitive learning of Algorithms and Data Structures. For further questions please contact: <a href="mailto:begy.volodimir@gmail.com">Begy Volodimir</a>
 </footer>
 <div id="info" class="popup hide"><div class="closer" onclick="javascript:_class('info', 'hide')"></div><a href="javascript:_class('info', 'hide')" class="close">X</a>
 	<div class="pole"><h2>Info</h2>
 	Collided and deleted buckets are marked purple, they need to be included in the collision path
 	<br>
-	Linear probing is a scheme in computer programming for resolving hash collisions of values of hash functions by sequentially searching the hash table for a free location.[1] This is accomplished using two values -
+	Linear probing is a scheme in computer programming for resolving hash collisions of values of hash functions by sequentially searching the hash table for a free location.[20] This is accomplished using two values -
 	one as a starting value and one as an interval between successive values in modular arithmetic. The second value, which is the same for all keys and known as the stepsize, is repeatedly added to the starting value
 	until a free space is found, or the entire table is traversed. (In order to traverse the entire table the stepsize should be relatively prime to the arraysize, which is why the array size is often chosen to be a prime number.)
      <br>newLocation = (startingValue + stepSize) % arraySize
@@ -165,9 +166,9 @@
 	applied to the value instead of a fixed stepsize as in linear probing.
 	Given an ordinary hash function H(x), a linear probing function (H(x, i)) would be:<br>
 	<img src="../../images/linearprobing.png" alt="bsimage"><br>
-	Here H(x) is the starting value, n the size of the hash table, and the stepsize is i in this case.[1]
+	Here H(x) is the starting value, n the size of the hash table, and the stepsize is i in this case.[20]
 	<br><br>
-	<div>[1]: <a href="http://en.wikipedia.org/wiki/Linear_probing" target="_blank">http://en.wikipedia.org/wiki/Linear_probing</a></div>
+	<div>[20]: <a href="http://en.wikipedia.org/wiki/Linear_probing" target="_blank">http://en.wikipedia.org/wiki/Linear_probing</a></div>
 	</div>
 </div>
 <div id="config" class="popup hide"><div class="closer" onclick="javascript:_class('config', 'hide')"></div><a href="javascript:_class('config', 'hide')" class="close">X</a>
@@ -176,12 +177,12 @@
 	</div>
 </div>
 <div id="about" class="popup hide"><div class="closer" onclick="javascript:_class('about', 'hide')"></div><a href="javascript:_class('about', 'hide')" class="close">X</a>
-	<div class="pole"><h2>About</h2>
+	<div class="pole2"><h2>About</h2>
 		<a href="http://gruppe.wst.univie.ac.at/workgroups/webAD" target="_blank">
 			<img src="../../images/uni.png" width="250px" alt="bsimage">
 		</a>
 		<a href="https://github.com/VolodimirBegy/webAD" target="_blank">
-			<img src="../../images/octocat.png" width="100px" alt="bsimage">
+			<img src="../../images/Octocat.png" width="100px" alt="bsimage">
 		</a>
 	</div>
 </div>
@@ -191,6 +192,7 @@
            	<li><a href="../vectors/BubbleSort.html">Bubble Sort</a></li>
            	<li><a href="../vectors/SelectionSort.html">Selection Sort</a></li>
            	<li><a href="../vectors/QuickSort.html">Quick Sort</a></li>
+           	<li><a href="../vectors/heapSort.html">Heap Sort</a></li>
           </ul>
 	</div>
 </div>
@@ -226,7 +228,6 @@
            	<li><a href="../trees/bst.html">Binary Search Tree</a></li>
            	<li><a href="../trees/bplus.html">B+ Tree</a></li>
            	<li><a href="../trees/heap.html">Binary Heap</a></li>
-           	<li><a href="../trees/heapSort.html">Heap Sort</a></li>
           </ul>
 	</div>
 </div>

@@ -26,7 +26,6 @@
 			var c1 = document.getElementById("container1");
 			tree = new TwoThreeFourView();
 			tree.view.initStage(c1);
-			tree.init();
 		}
 		
 		function example(){
@@ -34,6 +33,7 @@
 		}
 	
 		function clearTimes(){
+			//[30]
 			var pids = window.setTimeout(function() {}, 0);
 
 			while (pids--) {
@@ -153,7 +153,7 @@
 		<a href="#" class="z2" onclick="zoomOut();return false;"></a>
 		<a href="#" class="z1" onclick="zoomIn();return false;"></a>
 	</div>
-	webAD is a web-based system designed for simple and intuitive learning of Algorithms and Datastrures. For further questions please contact: <a href="mailto:begy.volodimir@gmail.com">begy.volodimir@gmail.com</a>
+	webAD is a web-based system designed for simple and intuitive learning of Algorithms and Data Structures. For further questions please contact: <a href="mailto:begy.volodimir@gmail.com">Begy Volodimir</a>
 </footer>
 <div id="info" class="popup hide"><div class="closer" onclick="javascript:_class('info', 'hide')"></div><a href="javascript:_class('info', 'hide')" class="close">X</a>
 	<div class="pole"><h2>Info</h2>
@@ -170,9 +170,9 @@
 	<li>The left and right subtree each must also be a binary search tree.</li>
 	<li>Each node can have up to two successor nodes.</li>
 	<li>There must be no duplicate nodes.</li>
-	<li>A unique path exists from the root to every other node.[1]</li>
+	<li>A unique path exists from the root to every other node.[26]</li>
 	<img src="../../images/Binary_search_tree.png" alt="bstimage">
-	<div>[1]: <a href="http://en.wikipedia.org/wiki/Binary_search_tree" target="_blank">http://en.wikipedia.org/wiki/Binary_search_tree</a></div>
+	<div>[26]: <a href="http://en.wikipedia.org/wiki/Binary_search_tree" target="_blank">http://en.wikipedia.org/wiki/Binary_search_tree</a></div>
 	</div>
 	</div>
 </div>
@@ -181,12 +181,12 @@
 	</div>
 </div>
 <div id="about" class="popup hide"><div class="closer" onclick="javascript:_class('about', 'hide')"></div><a href="javascript:_class('about', 'hide')" class="close">X</a>
-	<div class="pole"><h2>About</h2>
+	<div class="pole2"><h2>About</h2>
 		<a href="http://gruppe.wst.univie.ac.at/workgroups/webAD" target="_blank">
 			<img src="../../images/uni.png" width="250px" alt="bsimage">
 		</a>
 		<a href="https://github.com/VolodimirBegy/webAD" target="_blank">
-			<img src="../../images/octocat.png" width="100px" alt="bsimage">
+			<img src="../../images/Octocat.png" width="100px" alt="bsimage">
 		</a>
 	</div>
 </div>
@@ -196,6 +196,7 @@
            	<li><a href="../vectors/BubbleSort.html">Bubble Sort</a></li>
            	<li><a href="../vectors/SelectionSort.html">Selection Sort</a></li>
            	<li><a href="../vectors/QuickSort.html">Quick Sort</a></li>
+           	<li><a href="../vectors/heapSort.html">Heap Sort</a></li>
           </ul>
 	</div>
 </div>
@@ -231,7 +232,6 @@
            	<li><span>Binary Search Tree</span></li>
            	<li><a href="bplus.html">B+ Tree</a></li>
            	<li><a href="heap.html">Binary Heap</a></li>
-           	<li><a href="heapSort.html">Heap Sort</a></li>
           </ul>
 	</div>
 </div>

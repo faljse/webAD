@@ -23,6 +23,7 @@ function Node(){
 	this.yPosition=0;
 }
 
+//[31]
 function Timer(callback, delay) {
     this.timerId, this.start, this.remaining = delay;
     this._callback=callback;
@@ -53,7 +54,7 @@ Heap.prototype.init=function(){
 	//this.saveInDB();
 }
 
-Heap.prototype.copy=function(toCopy){
+Heap.prototype.copy=function(){
 	var newHeap=new Heap();
 	var nodes=[];
 	
@@ -83,8 +84,8 @@ Heap.prototype.copy=function(toCopy){
 		}
 			
 	}
-	if(toCopy.timer!=undefined){
-		newHeap.timer=new Timer(toCopy.timer._callback,toCopy.timer.remaining);
+	if(this.timer!=undefined){
+		newHeap.timer=new Timer(this.timer._callback,this.timer.remaining);
 		newHeap.timer.pause();
 	}
 	newHeap.nodes=nodes;
@@ -378,7 +379,7 @@ Heap.prototype.saveInDB=function(){
 
 	var nextID=this.db.length;
 	
-	var new_state = this.copy(this);
+	var new_state = this.copy();
 	//ignoring duplicates 
 	var last_state = this.db[this.db.length-1];
 	

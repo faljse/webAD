@@ -28,7 +28,6 @@ function LinearHashing(){
 	this.b=undefined;
 	this.d=undefined;
 	this.nts=0;
-
 	this.db=[];
 	this.actStateID=-1;
 }
@@ -206,12 +205,13 @@ LinearHashing.prototype.saveInDB=function(){
 
 	var nextID=this.db.length;
 	
-	var new_state = this.copy(this);
+	var new_state = this.copy();
 	this.db.push(new_state);
 	
 	this.actStateID=nextID;
 }
 
+//[32]
 function decbin(dec,length){
 	var out = "";
 	while(length--)

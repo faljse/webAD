@@ -27,7 +27,6 @@ function Vector(){
 
 Vector.prototype.init=function(){
 	this.elements=[];
-	this.sorted=false;
 	this.i=0;
 	this.j=0;
 
@@ -44,7 +43,8 @@ Vector.prototype.init=function(){
 	
 	this.paused=false;
 	this.finished=false;
-	this.saveInDB();
+	if(this.actStateID!=-1)
+		this.saveInDB();
 }
 
 Vector.prototype.saveInDB=function(){
@@ -55,7 +55,7 @@ Vector.prototype.saveInDB=function(){
 
 	var nextID=this.db.length;
 	
-	var new_state = this.copy(this);
+	var new_state = this.copy();
 	//code snippet for ignoring duplicates
 	var last_id=this.db.length-1;
 	var last_state=this.db[last_id];
@@ -81,34 +81,34 @@ Vector.prototype.saveInDB=function(){
 	}
 }
 
-Vector.prototype.copy=function(toCopy){
+Vector.prototype.copy=function(){
 	var newVector=new Vector();
-	newVector.sorted=toCopy.sorted;
-	newVector.i=toCopy.i;
-	newVector.j=toCopy.j;
-	newVector.tmpmin=toCopy.tmpmin;
+	newVector.finished=this.finished;
+	newVector.i=this.i;
+	newVector.j=this.j;
+	newVector.tmpmin=this.tmpmin;
 	newVector.paused=true;
 
-	newVector.col1=toCopy.col1;
-	newVector.col2=toCopy.col2;
-	newVector.col3=toCopy.col3;
-	newVector.col4=toCopy.col4;
-	newVector.col5=toCopy.col5;
+	newVector.col1=this.col1;
+	newVector.col2=this.col2;
+	newVector.col3=this.col3;
+	newVector.col4=this.col4;
+	newVector.col5=this.col5;
 	
-	newVector.speed=toCopy.speed;
+	newVector.speed=this.speed;
 	
-	newVector.stepDelay=toCopy.stepDelay;
+	newVector.stepDelay=this.stepDelay;
 	
 	newVector.elements=[];
-	for(var i=0;i<toCopy.elements.length;i++){
-		newVector.elements.push(new Element(toCopy.elements[i].value));
-		newVector.elements[i].color=toCopy.elements[i].color;
+	for(var i=0;i<this.elements.length;i++){
+		newVector.elements.push(new Element(this.elements[i].value));
+		newVector.elements[i].color=this.elements[i].color;
 	}
 	return newVector;
 }
 
 Vector.prototype.replaceThis=function(toCopy){
-	this.sorted=toCopy.sorted;
+	this.finished=toCopy.finished;
 	this.i=toCopy.i;
 	this.j=toCopy.j;
 	this.tmpmin=toCopy.tmpmin;
@@ -202,9 +202,9 @@ Vector.prototype.setRandomElements=function(){
 }
  
 Vector.prototype.setColorsSelectionSort=function(){
-	if(!this.sorted){
+	if(!this.finished){
 		for(var j=0;j<this.j;j++){
-			this.elements[j].color=this.col4; //sorted gold
+			this.elements[j].color=this.col4; //finished gold
 		}
 
 		if(this.j==this.tmpmin)
@@ -224,7 +224,7 @@ Vector.prototype.setColorsSelectionSort=function(){
 	
 	else{
 		for(var i=0;i<this.size();i++){
-			this.elements[i].color=this.col4; //sorted gold
+			this.elements[i].color=this.col4; //finished gold
 		}
 	}
 }
@@ -235,10 +235,11 @@ Vector.prototype.selectionSort=function(){
 		return;
 	}
 	else if(this.elements.length==1){
-		this.sorted=true;
+		this.finished=true;
 		this.setColorsSelectionSort();
 		this.draw();
 		this.saveInDB();
+		clearTimes();
 		return;
 	}
 	
@@ -305,12 +306,16 @@ Vector.prototype.selectionSort=function(){
 					},delay)
 					
 				}
-				//end reached and sorted
+				//end reached and finished
 				else{
-					vector.sorted=true;
+					vector.finished=true;
 					vector.setColorsSelectionSort();
 					vector.saveInDB();
 					vector.draw();
+					
+					//change the button. better way?
+					clearTimes();
+					
 					return;
 				}
 			},vector.speed*100)

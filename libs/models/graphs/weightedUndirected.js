@@ -316,7 +316,7 @@ WeightedUndirectedGraph.prototype.saveInDB=function(){
  	}
 
 	var nextID=this.db.length;
-	var new_state = this.copy(this);
+	var new_state = this.copy();
 	
 	var last_state=this.db[this.db.length-1];
 	var same=true;
@@ -352,6 +352,7 @@ WeightedUndirectedGraph.prototype.saveInDB=function(){
 }
 
 WeightedUndirectedGraph.prototype.kruskal=function(){
+	//[39]
 	if(this.nodes.length==1)
 		return;
 	var delay=0;
