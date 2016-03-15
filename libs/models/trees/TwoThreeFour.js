@@ -28,7 +28,9 @@ function Node(){
 	this.split=function()
 	{
 		var parent=new Node();
+		this.parent=parent;
 		var right=new Node();
+		right.parent=parent;
 		right.values=this.values.slice(N+1);
 		right.children=this.children.slice(N)
 		parent.children.push(this,right);
@@ -36,6 +38,26 @@ function Node(){
 		this.values=this.values.slice(0,N);
 		this.children=this.children.slice(0,N);
 		return parent;
+	}
+
+	this.findIdxPos=function(val)
+	{
+		var idx=0;
+		while(val > this.values[idx]&&idx<this.values.length)
+			idx++;
+		return idx;
+	}
+
+	this.getLeft=function()
+	{
+		var parentIdx=this.parent.findIdxPos(this.values[0]);
+		return this.parent.children[parentIdx];
+	}
+
+	this.getRight=function()
+	{
+		var parentIdx=this.parent.findIdxPos(this.values[this.values.length-1]);
+		return this.parent.children[parentIdx+1];
 	}
 
 	this.insertIndex=function(value, node) {
@@ -150,7 +172,7 @@ TwoThreeFour.prototype.insertNode=function(node, value) {
 				this.root=newNode;
 			}
 			return newNode;
-		}
+		}rem
 		return null;
 	}
 
@@ -201,15 +223,12 @@ TwoThreeFour.prototype.saveInDB=function(){
 TwoThreeFour.prototype.search=function() {
 
 	var value=parseInt(prompt("Search for:"));
-	if(isNaN(value))return;
-	
+	if(isNaN(value))
+		return;
 	var tree=this;
-	
 	if(tree.root==undefined){
 		return;
 	}
-
-
 }
 
 
@@ -220,8 +239,34 @@ TwoThreeFour.prototype.remove=function() {
 	if(this.root==undefined){
 		return;
 	}
-
+	this.removeIndex(tree.root, value);
 }
+
+TwoThreeFour.prototype.removeIndex=function(node, value) {
+
+	var idx=0;
+	while(value > node.values[idx]&&idx<node.values.length)
+		idx++;
+	if(node.values[idx]==value)
+	{
+		if(node.values.length == 1) //would underflow
+		{
+			//check for case 1:
+			// Bedingung: Alle adjazenten Knoten (benachbarte Knoten auf derselben Tiefe) zum unterlaufenden Knoten v sind 2-Knoten
+			left=node.getLeft();
+			right=node.getRight();
+			console.log('left:'+ left);
+			console.log('right:'+ right);
+		}
+		else
+			node.values.splice(idx,1);
+	}
+
+	else
+		this.removeIndex(node.children[idx],value);
+}
+
+
 
 TwoThreeFour.prototype.random=function(){
 	//var count=this.db().count();
