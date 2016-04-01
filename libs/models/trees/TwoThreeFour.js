@@ -65,6 +65,8 @@ function Node(){
 		var idx=0;
 		while(value > this.values[idx]&&idx<this.values.length)
 			idx++;
+		if(this.values[idx]==value)
+			return; //value existiert bereits
 
 		if(node!=null)
 		{
@@ -111,7 +113,7 @@ TwoThreeFour.prototype.copy=function(toCopy){
 		if(node==undefined)
 			return;
 		
-		newTree.addFixed(node.value);
+		newTree.add(node.value);
 		recursivePreorderTraversal(newTree,node.leftChild);
 		recursivePreorderTraversal(newTree,node.rightChild);
 	}
@@ -128,7 +130,7 @@ TwoThreeFour.prototype.replaceThis=function(toCopy){
 		if(node==undefined)
 			return;
 		
-		tree.addFixed(node.value);
+		tree.add(node.value);
 		recursivePreorderTraversal(tree,node.leftChild);
 		recursivePreorderTraversal(tree,node.rightChild);
 	}
@@ -172,7 +174,7 @@ TwoThreeFour.prototype.insertNode=function(node, value) {
 				this.root=newNode;
 			}
 			return newNode;
-		}rem
+		}
 		return null;
 	}
 
@@ -207,15 +209,6 @@ TwoThreeFour.prototype.add=function(val) {
 	this.draw();
 }
 
-TwoThreeFour.prototype.addFixed=function(_val) {
-	var node=new Node();
-	
-	node.value=_val;
-		
-	if(this.root==undefined){
-		this.root=node;
-	}
-}
 
 TwoThreeFour.prototype.saveInDB=function(){
 }
@@ -269,21 +262,13 @@ TwoThreeFour.prototype.removeIndex=function(node, value) {
 
 
 TwoThreeFour.prototype.random=function(){
-	//var count=this.db().count();
-
-	//if(count==this.actStateID){
-		
 		this.root=undefined;
-		var number=parseInt(Math.random()*10,10); 
+		var number=parseInt(20);
 	
 		for(var i=0;i<number;i++){
-			this.addFixed(parseInt(Math.random()*1000,10));
+			this.add(parseInt(Math.random()*50,10));
 		}
-		
-		this.saveInDB();
 		this.draw();
-	
-	//}
 }
 
 TwoThreeFour.prototype.example=function(){
@@ -291,7 +276,7 @@ TwoThreeFour.prototype.example=function(){
 	var numbers=[5,3,10,12,1,6];
 
 	for(var i=0;i<numbers.length;i++){
-		this.addFixed(numbers[i]);
+		this.add(numbers[i]);
 	}
 		
 	this.saveInDB();
