@@ -233,6 +233,7 @@ TwoThreeFour.prototype.remove=function() {
 		return;
 	}
 	this.removeIndex(tree.root, value);
+	this.draw();
 }
 
 TwoThreeFour.prototype.removeIndex=function(node, value) {
@@ -244,18 +245,42 @@ TwoThreeFour.prototype.removeIndex=function(node, value) {
 	{
 		if(node.values.length == 1) //would underflow
 		{
-			//check for case 1:
-			// Bedingung: Alle adjazenten Knoten (benachbarte Knoten auf derselben Tiefe) zum unterlaufenden Knoten v sind 2-Knoten
 			left=node.getLeft();
 			right=node.getRight();
+
 			console.log('left:'+ left);
 			console.log('right:'+ right);
+			if( left!==undefined&&
+				left.values.length==2&&
+				right!==undefined&&
+				right.values.length==2){
+				console.log("case 1");
+				//case 1:
+				// Bedingung: Alle adjazenten Knoten (benachbarte Knoten auf derselben Tiefe) zum unterlaufenden Knoten v sind 2-Knoten
+				//Man verschmilzt v mit einem/dem adjazenten Nachbarn w und verschiebt den nicht mehr benötigten
+				//Schlüssel vom Elternknoten u zu dem verschmolzenen Knoten v´
+
+			}
+			else{
+				console.log("case 2");
+				//case 2:
+				//Verschieben von Schlüsseln
+				//Bedingung: Ein adjazenter Knoten (benachbarter Knoten auf derselben Tiefe) w zum unterlaufenden Knoten v ist ein 3-Knoten oder 4-Knoten
+				//Man verschiebt ein Kind von w nach v
+				//Man verschiebt einen Schlüssel von u nach v
+				//Man verschiebt einen Schlüssel von w nach u
+				//Nach dem Verschieben ist der Unterlauf behoben
+
+			}
+
+
+
+
 		}
 		else
 			node.values.splice(idx,1);
 	}
-
-	else
+	else if(node.children.length>idx)
 		this.removeIndex(node.children[idx],value);
 }
 
