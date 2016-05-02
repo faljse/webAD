@@ -43,54 +43,64 @@ TwoThreeFourView.prototype.draw=function(){
 	if(this.model.root!=undefined)
 		tmpNodes.push(this.model.root);
 	var level=1;
-	var finished=new Boolean();
-	finished=false;
+	var finished=false;
 	var model=this.model;
 	this.stage.setHeight(500);
 	this.stage.setWidth(1000);
 	this.stage.removeChildren();
-
 	var layer = new Kinetic.Layer();
 
-	var row=1;
+	var row=0;
 	var col=0;
 	function bla(node, row, col,x,y)
 	{
 		for(var i=0;i<node.values.length;i++)
 		{
-			var textX=100+i*25+25*(col *model.N*2);
-			var textY=row*50+100;
+			var textX=x+i*25+25*(col *model.N*2);
+			var textY=row*50+25	;
 			var text = new Kinetic.Text({
-				y: textY,
 				x: textX,
+				y: textY,
 				text: ':'+node.values[i],
 				fontSize: 15,
 				fontFamily: 'Calibri',
 				fill: 'green'
 			});
 			layer.add(text);
-
-
-			var line = new Kinetic.Line({
-				points: [x, y, textX, textY],
-				stroke: 'red',
-				strokeWidth: 2,
-				lineCap: 'round',
-				lineJoin: 'round',
-				dashArray: [1, 1]
-			});
-			layer.add(line);
 		}
+
+		//calc node positions
+		var xOff=i*50+25*(col*Math.pow(model.N, row));
+		var yOff=row*50+50;
+		var xStart=x+25*(col*model.N*2);
+		var yStart=row*50+20;
+
+		var line = new Kinetic.Line({
+			points: [x, y, xStart, yStart],
+			stroke: 'red',
+			strokeWidth: 1,
+			lineCap: 'round',
+			lineJoin: 'round',
+			dashArray: [1, 1]
+		});
+		layer.add(line);
+
+		var nodeBorder = new Kinetic.Rect({
+			x: xStart,
+			y: yStart,
+			width: 100,
+			height: 25,
+			//fill: none,
+			stroke: 'blue',
+			strokeWidth: 1,
+		});
+		layer.add(nodeBorder)
 
 		for(var i=0;i<node.children.length;i++)
 		{
-			bla(node.children[i], row+1, col*model.N*2+i, 100+i*50 +25*(col*Math.pow(model.N,row)), row*50+100);
-
+			bla(node.children[i], row+1, col*model.N*2+i, xOff, yOff);
 		}
 	}
-	bla(this.model.root,row,col);
-	//add to layer
-
-
+	bla(this.model.root, row, col, 0, 0);
 	this.stage.add(layer);
 }

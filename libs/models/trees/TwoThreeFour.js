@@ -13,7 +13,6 @@
  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var N=2;
 function Node(){
 	this.values = [];
 	this.children = [];
@@ -31,12 +30,12 @@ function Node(){
 		this.parent=parent;
 		var right=new Node();
 		right.parent=parent;
-		right.values=this.values.slice(N+1);
-		right.children=this.children.slice(N)
+		right.values=this.values.slice(3);
+		right.children=this.children.slice(3)
 		parent.children.push(this,right);
-		parent.values.push(this.values[N]);
-		this.values=this.values.slice(0,N);
-		this.children=this.children.slice(0,N);
+		parent.values.push(this.values[2]);
+		this.values=this.values.slice(0,2);
+		this.children=this.children.slice(0,3);
 		return parent;
 	}
 
@@ -117,9 +116,7 @@ TwoThreeFour.prototype.copy=function(toCopy){
 		recursivePreorderTraversal(newTree,node.leftChild);
 		recursivePreorderTraversal(newTree,node.rightChild);
 	}
-
 	recursivePreorderTraversal(newTree,toCopy.root);
-
 	return newTree;
 }
 
@@ -134,18 +131,15 @@ TwoThreeFour.prototype.replaceThis=function(toCopy){
 		recursivePreorderTraversal(tree,node.leftChild);
 		recursivePreorderTraversal(tree,node.rightChild);
 	}
-
 	recursivePreorderTraversal(this,toCopy.root);
-
 }
 
 TwoThreeFour.prototype.prev=function(){
 }
 
 TwoThreeFour.prototype.next=function(){
-	for(var i=0;i<12;i++)
+	for(var i=0;i<15;i++)
 		add(i);
-
 }
 
 TwoThreeFour.prototype.firstState=function(){
@@ -155,6 +149,7 @@ TwoThreeFour.prototype.lastState=function(){
 }
 
 TwoThreeFour.prototype.insertNode=function(node, value) {
+	debug.debug('insert node: '+value);
 	var newNode=null;
 	for(var i=0;i<node.children.length;i++) {
 		if (i==node.values.length||node.values[i] > value) {
@@ -166,30 +161,29 @@ TwoThreeFour.prototype.insertNode=function(node, value) {
 	if(node.children.length==0) //unterste ebene
 	{
 		node.insertIndex(value);
-		if(node.values.length>this.N*2) //overflow->split
+		if(node.values.length >= 4) //overflow->split
 		{
+			debug.debug('overflow->split');
 			newNode=node.split();
 			if(newNode!=null&&node==this.root)
 			{
+				debug.debug('new root: ' + newNode.toString());
 				this.root=newNode;
 			}
 			return newNode;
 		}
 		return null;
 	}
-
 	if (newNode == null)
 		return newNode;
 
-	if (node.getSize() < this.N * 2) {//noch platz im index
-		node.insertIndex(value, newNode);
-		return;
+	node.insertIndex(value, newNode);
+	if (node.values.length == 4) { //overflow
+		var retNode= node.split();
+		if(node==this.root)
+			this.root=retNode;
+		return retNode;
 	}
-
-	newNode=node.split();
-	if(node==this.root)
-		this.root=newNode;
-	return newNode;
 }
 
 TwoThreeFour.prototype.add=function(val) {
@@ -298,7 +292,7 @@ TwoThreeFour.prototype.random=function(){
 
 TwoThreeFour.prototype.example=function(){
 	this.root=undefined;
-	var numbers=[5,3,10,12,1,6];
+	var numbers=[5,3,10,12,1,6,13,14];
 
 	for(var i=0;i<numbers.length;i++){
 		this.add(numbers[i]);
