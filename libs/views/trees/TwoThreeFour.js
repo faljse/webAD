@@ -57,7 +57,7 @@ TwoThreeFourView.prototype.draw=function(){
 		for(var i=0;i<node.values.length;i++)
 		{
 			var textX=x+i*25+25*(col *model.N*2);
-			var textY=row*50+25	;
+			var textY=row*70+25	;
 			var text = new Kinetic.Text({
 				x: textX,
 				y: textY,
@@ -70,10 +70,10 @@ TwoThreeFourView.prototype.draw=function(){
 		}
 
 		//calc node positions
-		var xOff=i*50+25*(col*Math.pow(model.N, row));
-		var yOff=row*50+50;
+		var xOff=60*(col*Math.pow(model.N, row));
+		var yOff=row*70+50;
 		var xStart=x+25*(col*model.N*2);
-		var yStart=row*50+20;
+		var yStart=row*70+20;
 
 		var line = new Kinetic.Line({
 			points: [x, y, xStart, yStart],
@@ -98,7 +98,7 @@ TwoThreeFourView.prototype.draw=function(){
 
 		for(var i=0;i<node.children.length;i++)
 		{
-			bla(node.children[i], row+1, col*model.N*2+i, xOff, yOff);
+			bla(node.children[i], row+1, col*model.N*2+i, xOff+i*20, yOff);
 		}
 	}
 	bla(this.model.root, row, col, 0, 0);
