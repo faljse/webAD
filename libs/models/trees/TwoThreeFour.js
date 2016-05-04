@@ -95,14 +95,19 @@ function Node(){
 
 function TwoThreeFour(){
 	this.view=new TwoThreeFourView(this);
-	this.db=[];
+	this.history=[];
 	this.root=undefined;
 	this.actStateID=-1;
 	this.N=2; //234 Tree
 }
 
 TwoThreeFour.prototype.init=function(){
-	this.saveInDB();
+	//this.pushto
+}
+
+TwoThreeFour.prototype.pushToHistory=function (type, text, node)
+{
+	this.history.push([type, text, JSON.parse(JSON.stringify(node))]);
 }
 
 TwoThreeFour.prototype.copy=function(toCopy){
@@ -138,8 +143,6 @@ TwoThreeFour.prototype.prev=function(){
 }
 
 TwoThreeFour.prototype.next=function(){
-	for(var i=0;i<15;i++)
-		add(i);
 }
 
 TwoThreeFour.prototype.firstState=function(){
@@ -199,7 +202,7 @@ TwoThreeFour.prototype.add=function(val) {
 		//this.saveInDB();
 	}
 	this.insertNode(this.root,val);
-	this.root.print();
+	this.pushToHistory("major","",this.root);
 	this.draw();
 }
 
@@ -297,8 +300,6 @@ TwoThreeFour.prototype.example=function(){
 	for(var i=0;i<numbers.length;i++){
 		this.add(numbers[i]);
 	}
-		
-	this.saveInDB();
 	this.draw();
 }
 
