@@ -12,7 +12,7 @@
   <script src="../../libs/externalLibs/jquery.min.js"></script>
   <script src="../../libs/externalLibs/kinetic-v5.1.0.min.js"></script>
 	<script src="../../libs/externalLibs/ba-debug.js"></script>
-
+	<script src="../../libs/externalLibs/cycle.js"></script>
 
 	<script type="text/javascript" src="../../libs/menu.js"></script>
 
@@ -21,13 +21,12 @@
 </head>
 
 <script>
-		
 		var tree=undefined;
-		
 		function init(){
 			var c1 = document.getElementById("container1");
+			var list = document.getElementById("versions");
 			tree = new TwoThreeFour();
-			tree.view.initStage(c1);
+			tree.view.initStage(c1, list);
 			tree.init();
 		}
 		
@@ -142,7 +141,11 @@
          <input type="button" value="Generate Random" id="random" onclick="random();return false;">
 		<input type="button" value="Add Value" id="add" onclick="add();return false;">
 		<input type="button" value="Remove Value" id="remove" onclick="rem();return false;">
-		<input type="button" value="Search for Value" id="search" onclick="search();return false;">	</div>
+		<input type="button" value="Search for Value" id="search" onclick="search();return false;">
+		<select  id="versions" name="sometext" size="5" style="width: 100%">
+
+		</select>
+	</div>
 	<div id="container1"></div>
 </article>
 <footer>

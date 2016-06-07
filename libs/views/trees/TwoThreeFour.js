@@ -13,18 +13,21 @@
  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-function TwoThreeFourView(_model){
-	this.model=_model;
-	this.scale=1;
+'use strict';
+
+function TwoThreeFourView(_model) {
+    this.model = _model;
+    this.scale = 1;
 }
 
-TwoThreeFourView.prototype.initStage=function(cont){
-	this.stage = new Kinetic.Stage({
-		container: cont,
-		draggable: true,
-		width: 0,
-		height: 0
-	});
+TwoThreeFourView.prototype.initStage = function (cont, listbox) {
+    this.listbox = listbox;
+    this.stage = new Kinetic.Stage({
+        container: cont,
+        draggable: true,
+        width: 0,
+        height: 0
+    });
 }
 
 TwoThreeFourView.prototype.zoomIn=function(){
@@ -103,4 +106,15 @@ TwoThreeFourView.prototype.draw=function(){
 	}
 	bla(this.model.root, row, col, 0, 0);
 	this.stage.add(layer);
+    var diff=this.model.history.length-this.listbox.length;
+    var start=this.listbox.length;
+    for(var i=0;i<diff;i++)
+    {
+        var opt = document.createElement('option');
+        opt.value = start+i;
+        var entry=this.model.history[start+i]
+        opt.innerHTML = (start+i)+' '+entry[0]+' '+entry[1];
+        this.listbox.appendChild(opt);
+    }
+
 }
