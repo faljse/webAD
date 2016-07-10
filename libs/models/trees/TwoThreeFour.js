@@ -43,19 +43,40 @@ function Node() {
 
     this.findIdxPos = function (val) {
         var idx = 0;
-        while (val > this.values[idx] && idx < this.values.length)
+        while (val >= this.values[idx] && idx <= this.values.length)
             idx++;
         return idx;
     };
 
     this.getLeft = function () {
-        var parentIdx = this.parent.findIdxPos(this.values[0]);
-        return this.parent.children[parentIdx-1];
+        return this.getLeftRecursive(this.parent, this.values[this.values.length-1]);
     };
 
+    this.getLeftRecursive = function (n, value) {
+        var idx=n.findIdxPos(value);
+        if(idx==0)
+        {
+            var x=this.getLeftRecursive(n.parent, value);
+            return x.children[x.children.length-1];
+        }
+        else
+            return n.children[idx-1];
+    };
+
+
     this.getRight = function () {
-        var parentIdx = this.parent.findIdxPos(this.values[this.values.length - 1]);
-        return this.parent.children[parentIdx + 1];
+        return this.getRightRecurse(this.parent, this.values[this.values.length-1]);
+    };
+
+    this.getRightRecurse = function (n, value) {
+        var idx=n.findIdxPos(value);
+        if(idx>=n.values.length)
+        {
+            var x=this.getRightRecurse(n.parent, value);
+            return x.children[0];
+        }
+        else
+            return n.children[idx+1];
     };
 
     this.insertIndex = function (value, node) {
@@ -269,6 +290,7 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
                     left.children.splice(left.children.length, 0, node.children[0]);
                 }
                 var pos=node.parent.findIdxPos(value);
+                left.values.spl
                 left.values.push(node.parent.values[pos-1]);
                 node.parent.values.splice(pos-1,1);
                 node.parent.children.splice(pos,1);
