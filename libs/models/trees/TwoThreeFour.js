@@ -259,15 +259,35 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
     {
         console.log('left:' + left);
         console.log('right:' + right);
-        if (left !== undefined &&
-            left.values.length == 2 &&
-            right !== undefined &&
-            right.values.length == 2) {
-            console.log("case 1");
+        if ((left == undefined ||
+            left.values.length == 1) &&
+            (right == undefined ||
+            right.values.length == 1)) {
+            console.log("case 1, verschmelzen");
+            if(left!=undefined) {
+                if(node.children.length>0) {
+                    left.children.splice(left.children.length, 0, node.children[0]);
+                }
+                var pos=node.parent.findIdxPos(value);
+                left.values.push(node.parent.values[pos-1]);
+                node.parent.values.splice(pos-1,1);
+                node.parent.children.splice(pos,1);
+            }
+            else if(right!=undefined) {
+                if(node.children.length>0) {
+                    right.children.splice(0, 0, node.children[0]);
+                }
+                var pos=node.parent.findIdxPos(value);
+                right.values.splice(0,0,node.parent.values[pos-1]);
+                node.parent.children.splice(pos-1,1);
+            }
+
             //case 1:
             // Bedingung: Alle adjazenten Knoten (benachbarte Knoten auf derselben Tiefe) zum unterlaufenden Knoten v sind 2-Knoten
             //Man verschmilzt v mit einem/dem adjazenten Nachbarn w und verschiebt den nicht mehr benötigten
             //Schlüssel vom Elternknoten u zu dem verschmolzenen Knoten v´
+
+
         }
         else {
             console.log("case 2");
