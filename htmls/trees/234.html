@@ -115,6 +115,13 @@
      	tree.view.zoomOut();
 	}
 
+	function changeFunc() {
+		var selectBox = document.getElementById("versions");
+		var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+		tree.loadVersion(selectedValue);
+	}
+
+
 </script>
 
 <body id="body" class="page" onload="init();example();return false;">
@@ -142,7 +149,7 @@
 		<input type="button" value="Add Value" id="add" onclick="add();return false;">
 		<input type="button" value="Remove Value" id="remove" onclick="rem();return false;">
 		<input type="button" value="Search for Value" id="search" onclick="search();return false;">
-		<select  id="versions" name="sometext" size="5" style="width: 100%">
+		<select  id="versions" name="sometext" size="5" style="width: 100%" onchange="changeFunc();">
 
 		</select>
 	</div>

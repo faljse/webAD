@@ -32,6 +32,8 @@ function Node() {
         right.parent = parent;
         right.values = this.values.slice(3);
         right.children = this.children.slice(3)
+        for(var i=0;i<right.children.length;i++)
+            right.children[i].parent=right;
         parent.children.push(this, right);
         parent.values.push(this.values[2]);
         this.values = this.values.slice(0, 2);
@@ -67,6 +69,9 @@ function Node() {
         if (node != null) {
             this.values.splice(idx, 0, node.values[0]);
             this.children.splice(idx + 1, 0, node.children[1]);
+            for(var i=0;i<this.children.length;i++)
+                this.children[i].parent=this;
+            node.parent=this.parent;
         }
         else {
             this.values.splice(idx, 0, value);
@@ -100,6 +105,12 @@ TwoThreeFour.prototype.init = function () {
 TwoThreeFour.prototype.pushToHistory = function (type, text, node) {
     this.history.push([type, text, JSON.retrocycle(JSON.parse(JSON.stringify(JSON.decycle(node))))]);
 };
+
+TwoThreeFour.prototype.loadVersion=function(id){
+    console.log(this.history[id]);
+    this.root=this.history[id][2];
+    this.draw();
+}
 
 TwoThreeFour.prototype.copy = function (toCopy) {
     var newTree = new TwoThreeFour();
