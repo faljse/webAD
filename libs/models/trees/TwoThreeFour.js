@@ -50,7 +50,7 @@ function Node() {
 
     this.getLeft = function () {
         var parentIdx = this.parent.findIdxPos(this.values[0]);
-        return this.parent.children[parentIdx];
+        return this.parent.children[parentIdx-1];
     };
 
     this.getRight = function () {
@@ -242,48 +242,78 @@ TwoThreeFour.prototype.remove = function () {
 }
 
 TwoThreeFour.prototype.removeIndex = function (node, value) {
-
     var idx = 0;
     while (value > node.values[idx] && idx < node.values.length)
         idx++;
-    if (node.values[idx] == value) {
-        if (node.values.length == 1) //would underflow
-        {
-            var left = node.getLeft();
-            var right = node.getRight();
+    if(node.children.length>0)
+        this.removeIndex(node.children[idx], value);
+//else if (node.children.length > idx)
+    //    this.removeIndex(node.children[idx], value);
+    if (node.values[idx] != value)
+        return;
+    var left = node.getLeft();
+    var right = node.getRight();
 
-            console.log('left:' + left);
-            console.log('right:' + right);
-            if (left !== undefined &&
-                left.values.length == 2 &&
-                right !== undefined &&
-                right.values.length == 2) {
-                console.log("case 1");
-                //case 1:
-                // Bedingung: Alle adjazenten Knoten (benachbarte Knoten auf derselben Tiefe) zum unterlaufenden Knoten v sind 2-Knoten
-                //Man verschmilzt v mit einem/dem adjazenten Nachbarn w und verschiebt den nicht mehr benötigten
-                //Schlüssel vom Elternknoten u zu dem verschmolzenen Knoten v´
-
+    node.values.splice(idx, 1);
+    if (node.values.length == 0) //underflow
+    {
+        console.log('left:' + left);
+        console.log('right:' + right);
+        if (left !== undefined &&
+            left.values.length == 2 &&
+            right !== undefined &&
+            right.values.length == 2) {
+            console.log("case 1");
+            //case 1:
+            // Bedingung: Alle adjazenten Knoten (benachbarte Knoten auf derselben Tiefe) zum unterlaufenden Knoten v sind 2-Knoten
+            //Man verschmilzt v mit einem/dem adjazenten Nachbarn w und verschiebt den nicht mehr benötigten
+            //Schlüssel vom Elternknoten u zu dem verschmolzenen Knoten v´
+        }
+        else {
+            console.log("case 2");
+            //case 2:
+            //Verschieben von Schlüsseln
+            //Bedingung: Ein adjazenter Knoten (benachbarter Knoten auf derselben Tiefe) w zum unterlaufenden
+            // Knoten v ist ein 3-Knoten oder 4-Knoten
+            //Man verschiebt ein Kind von w nach v
+            //Man verschiebt einen Schlüssel von u nach v
+            //Man verschiebt einen Schlüssel von w nach u
+            //Nach dem Verschieben ist der Unterlauf behoben
+            var v=node;
+            if(left!=undefined&&left.values.length==2||left.values.length==3) {
+                console.log("left")
+                //Man verschiebt ein Kind von w nach v
+                if(left.children.length>0) {
+                    node.children.splice(0, 0, left.children[left.children.length - 1]);
+                    left.children.splice(-1, 1);
+                }
+                //Man verschiebt einen Schlüssel von u nach v
+                var pos=node.parent.findIdxPos(value)
+                //left.values.splice(0,node.parent.values[pos]);
+                node.values.splice(0,0,node.parent.values[pos-1]);
+                node.parent.values.splice(pos-1,1);
+                //Man verschiebt einen Schlüssel von w nach u
+                node.parent.values.splice(pos-1,0,left.values[left.values.length-1]);
+                left.values.splice(-1,1);
             }
             else {
-                console.log("case 2");
-                //case 2:
-                //Verschieben von Schlüsseln
-                //Bedingung: Ein adjazenter Knoten (benachbarter Knoten auf derselben Tiefe) w zum unterlaufenden Knoten v ist ein 3-Knoten oder 4-Knoten
+                console.log("right")
                 //Man verschiebt ein Kind von w nach v
+                if(right.children.length>0) {
+                    node.children.splice(0, 0, right.children[0]);
+                    node.children.splice(0,0,1);
+                }
                 //Man verschiebt einen Schlüssel von u nach v
+                var pos=node.parent.findIdxPos(value)
+                node.values.splice(0,0,node.parent.values[pos]);
+                node.parent.values.splice(pos,1);
                 //Man verschiebt einen Schlüssel von w nach u
-                //Nach dem Verschieben ist der Unterlauf behoben
-
+                node.parent.values.splice(pos,0,right.values[0]);
+                right.values.splice(0,1);
             }
-
-
         }
-        else
-            node.values.splice(idx, 1);
     }
-    else if (node.children.length > idx)
-        this.removeIndex(node.children[idx], value);
+
 }
 
 
