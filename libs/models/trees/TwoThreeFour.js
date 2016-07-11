@@ -54,7 +54,7 @@ function Node() {
 
     this.getLeftRecursive = function (n, value) {
         var idx=n.findIdxPos(value);
-        if(idx==0)
+        if(idx==0&&n.parent!=undefined)
         {
             var x=this.getLeftRecursive(n.parent, value);
             return x.children[x.children.length-1];
@@ -70,7 +70,7 @@ function Node() {
 
     this.getRightRecurse = function (n, value) {
         var idx=n.findIdxPos(value);
-        if(idx>=n.values.length)
+        if(idx>=n.values.length&&n.parent!=undefined)
         {
             var x=this.getRightRecurse(n.parent, value);
             return x.children[0];
@@ -129,7 +129,8 @@ TwoThreeFour.prototype.pushToHistory = function (type, text, node) {
 
 TwoThreeFour.prototype.loadVersion=function(id){
     console.log(this.history[id]);
-    this.root=this.history[id][2];
+    this.root.children=this.history[id][2].children;
+    this.root.values=this.history[id][2].values;
     this.draw();
 }
 
@@ -252,7 +253,6 @@ TwoThreeFour.prototype.search = function () {
 
 
 TwoThreeFour.prototype.remove = function () {
-
     var value = parseInt(prompt("delete:"));
     if (isNaN(value))return;
     if (this.root == undefined) {
@@ -303,13 +303,10 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
                 right.values.splice(0,0,node.parent.values[pos-1]);
                 node.parent.children.splice(pos-1,1);
             }
-
             //case 1:
             // Bedingung: Alle adjazenten Knoten (benachbarte Knoten auf derselben Tiefe) zum unterlaufenden Knoten v sind 2-Knoten
             //Man verschmilzt v mit einem/dem adjazenten Nachbarn w und verschiebt den nicht mehr benötigten
             //Schlüssel vom Elternknoten u zu dem verschmolzenen Knoten v´
-
-
         }
         else {
             console.log("case 2");
@@ -343,7 +340,7 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
                 //Man verschiebt ein Kind von w nach v
                 if(right.children.length>0) {
                     node.children.splice(0, 0, right.children[0]);
-                    node.children.splice(0,0,1);
+                    node.children.splice(0,1);
                 }
                 //Man verschiebt einen Schlüssel von u nach v
                 var pos=node.parent.findIdxPos(value)
@@ -355,7 +352,6 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
             }
         }
     }
-
 }
 
 
