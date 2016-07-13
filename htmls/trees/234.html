@@ -144,7 +144,7 @@
 </aside>
 <article>
 	<div id="menu" class="open">
-		<a href="javascript:_class('menu', 'open')">Binary Search Tree</a>
+		<a href="javascript:_class('menu', 'open')">2-3-4 Tree</a>
          <input type="button" value="Generate Random" id="random" onclick="random();return false;">
 		<input type="button" value="Add Value" id="add" onclick="add();return false;">
 		<input type="button" value="Remove Value" id="remove" onclick="rem();return false;">
@@ -171,18 +171,10 @@
 	<div class="pole"><h2>Info</h2>
 	Legend: Blue lines lead to a child with smaller value, red to a child with greater/equal value
 	<br>
-	Binary search tree (BST), sometimes also called an ordered or sorted binary tree, is a node-based binary tree data structure <br>where each node has a comparable key (and an associated value) and satisfies the restriction
-	that the key in any node is larger than the keys in all nodes in that node's left subtree and smaller than the keys in all nodes in that node's right sub-tree. Each node has no more than two child nodes. Each child must
-	either be a leaf node or the root of another binary search tree. The left sub-tree contains only nodes with keys less than the parent node; the right sub-tree contains only nodes with keys greater than the parent node.
-	BSTs are also dynamic data structures, and the size of a BST is only limited by the amount of free memory in the operating system. The main advantage of binary search trees is that it remains ordered, which provides quicker 
-	search times than many other data structures. The common properties of binary search trees are as follows: 
-	<br>
-	<li>The left subtree of a node contains only nodes with keys less than the node's key.</li>
-	<li>The right subtree of a node contains only nodes with keys greater than the node's key.</li>
-	<li>The left and right subtree each must also be a binary search tree.</li>
-	<li>Each node can have up to two successor nodes.</li>
-	<li>There must be no duplicate nodes.</li>
-	<li>A unique path exists from the root to every other node.[1]</li>
+		Ein 2-3-4 Baum ist ein Mehrwegbaum mit den folgenden Eigenschaften
+		Größeneigenschaft: jeder interne Knoten hat mindestens 2 und maximal 4 Kinder
+		Tiefeneigenschaft: alle externe Knoten besitzen dieselbe Tiefe
+		Abhängig von der Anzahl der Kinder heißt ein interner Knoten 2-Knoten, 3-Knoten oder 4-Knoten
 	<img src="../../images/Binary_search_tree.png" alt="bstimage">
 	<div>[1]: <a href="http://en.wikipedia.org/wiki/Binary_search_tree" target="_blank">http://en.wikipedia.org/wiki/Binary_search_tree</a></div>
 	</div>
@@ -240,7 +232,7 @@
 <div id="tre" class="popup hide"><div class="closer" onclick="javascript:_class('tre', 'hide')"></div><a href="javascript:_class('tre', 'hide')" class="close">X</a>
 	<div class="pole"><h2>Trees</h2>
 	     <ul>
-           	<li><span>Binary Search Tree</span></li>
+           	<li><span>2-3-4 Tree</span></li>
            	<li><a href="bplus.html">B+ Tree</a></li>
            	<li><a href="heap.html">Binary Heap</a></li>
            	<li><a href="heapSort.html">Heap Sort</a></li>

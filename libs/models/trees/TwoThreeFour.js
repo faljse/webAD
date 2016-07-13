@@ -1,7 +1,7 @@
 /*
  Software License Agreement (BSD License)
  http://wwwlab.cs.univie.ac.at/~a1100570/webAD/
- Copyright (c), Volodimir Begy
+ Copyright (c), Martin Kunz
  All rights reserved.
 
 
@@ -250,7 +250,6 @@ TwoThreeFour.prototype.search = function () {
         return;
     }
 }
-
 
 TwoThreeFour.prototype.remove = function () {
     var value = parseInt(prompt("delete:"));
