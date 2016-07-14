@@ -14,102 +14,115 @@
  */
 'use strict';
 
-function Node() {
+function Node(node) {
     this.values = [];
     this.children = [];
     this.parent = undefined;
     this.xPosition = 0;
     this.yPosition = 0;
 
-    this.isLeaf = function () {
-        return this.children.length === 0;
-    };
-
-    this.split = function () {
-        var parent = new Node();
-        this.parent = parent;
-        var right = new Node();
-        right.parent = parent;
-        right.values = this.values.slice(3);
-        right.children = this.children.slice(3)
-        for(var i=0;i<right.children.length;i++)
-            right.children[i].parent=right;
-        parent.children.push(this, right);
-        parent.values.push(this.values[2]);
-        this.values = this.values.slice(0, 2);
-        this.children = this.children.slice(0, 3);
-        return parent;
-    };
-
-    this.findIdxPos = function (val) {
-        var idx = 0;
-        while (val >= this.values[idx] && idx <= this.values.length)
-            idx++;
-        return idx;
-    };
-
-    this.getLeft = function () {
-        return this.getLeftRecursive(this.parent, this.values[this.values.length-1]);
-    };
-
-    this.getLeftRecursive = function (n, value) {
-        var idx=n.findIdxPos(value);
-        if(idx==0&&n.parent!=undefined)
-        {
-            var x=this.getLeftRecursive(n.parent, value);
-            return x.children[x.children.length-1];
+    if (node !== undefined) {
+        for (var i = 0; i < node.children.length; i++) {
+            this.children.push(new Node(node.children[i]));
+            this.children[i].parent=this;
         }
-        else
-            return n.children[idx-1];
-    };
-
-
-    this.getRight = function () {
-        return this.getRightRecurse(this.parent, this.values[this.values.length-1]);
-    };
-
-    this.getRightRecurse = function (n, value) {
-        var idx=n.findIdxPos(value);
-        if(idx>=n.values.length&&n.parent!=undefined)
-        {
-            var x=this.getRightRecurse(n.parent, value);
-            return x.children[0];
-        }
-        else
-            return n.children[idx+1];
-    };
-
-    this.insertIndex = function (value, node) {
-
-        var idx = 0;
-        while (value > this.values[idx] && idx < this.values.length)
-            idx++;
-        if (this.values[idx] == value)
-            return; //value existiert bereits
-
-        if (node != null) {
-            this.values.splice(idx, 0, node.values[0]);
-            this.children.splice(idx + 1, 0, node.children[1]);
-            for(var i=0;i<this.children.length;i++)
-                this.children[i].parent=this;
-            node.parent=this.parent;
-        }
-        else {
-            this.values.splice(idx, 0, value);
-        }
-    };
-
-    this.print = function () {
-        var txt = " ";
-        for (var i = 0; i < this.values.length; i++)
-            txt += "," + this.values[i];
-        console.log(txt)
-    };
-
-    this.getSize = function () {
-        return this.values.length + 1;
-    };
+        this.parent = node.parent;
+        this.xPosition = node.xPosition;
+        this.yPosition = node.yPosition;
+        this.values = node.values;
+    }
 }
+
+
+Node.prototype.isLeaf = function () {
+    return this.children.length === 0;
+};
+
+Node.prototype.split = function () {
+    var parent = new Node();
+    this.parent = parent;
+    var right = new Node();
+    right.parent = parent;
+    right.values = this.values.slice(3);
+    right.children = this.children.slice(3)
+    for(var i=0;i<right.children.length;i++)
+        right.children[i].parent=right;
+    parent.children.push(this, right);
+    parent.values.push(this.values[2]);
+    this.values = this.values.slice(0, 2);
+    this.children = this.children.slice(0, 3);
+    return parent;
+};
+
+Node.prototype.findIdxPos = function (val) {
+    var idx = 0;
+    while (val >= this.values[idx] && idx <= this.values.length)
+        idx++;
+    return idx;
+};
+
+Node.prototype.getLeft = function () {
+    return this.getLeftRecursive(this.parent, this.values[this.values.length-1]);
+};
+
+Node.prototype.getLeftRecursive = function (n, value) {
+    var idx=n.findIdxPos(value);
+    if(idx==0&&n.parent!=undefined)
+    {
+        var x=this.getLeftRecursive(n.parent, value);
+        return x.children[x.children.length-1];
+    }
+    else
+        return n.children[idx-1];
+};
+
+
+Node.prototype.getRight = function () {
+    return this.getRightRecurse(this.parent, this.values[this.values.length-1]);
+};
+
+Node.prototype.getRightRecurse = function (n, value) {
+    var idx=n.findIdxPos(value);
+    if(idx>=n.values.length&&n.parent!=undefined)
+    {
+        var x=this.getRightRecurse(n.parent, value);
+        return x.children[0];
+    }
+    else
+        return n.children[idx+1];
+};
+
+Node.prototype.insertIndex = function (value, node) {
+
+    var idx = 0;
+    while (value > this.values[idx] && idx < this.values.length)
+        idx++;
+    if (this.values[idx] == value)
+        return; //value existiert bereits
+
+    if (node != null) {
+        this.values.splice(idx, 0, node.values[0]);
+        this.children.splice(idx + 1, 0, node.children[1]);
+        for(var i=0;i<this.children.length;i++)
+            this.children[i].parent=this;
+        node.parent=this.parent;
+    }
+    else {
+        this.values.splice(idx, 0, value);
+    }
+};
+
+Node.prototype.print = function () {
+    var txt = " ";
+    for (var i = 0; i < this.values.length; i++)
+        txt += "," + this.values[i];
+    console.log(txt)
+};
+
+Node.prototype.getSize = function () {
+    return this.values.length + 1;
+};
+
 
 function TwoThreeFour() {
     this.view = new TwoThreeFourView(this);
@@ -129,8 +142,10 @@ TwoThreeFour.prototype.pushToHistory = function (type, text, node) {
 
 TwoThreeFour.prototype.loadVersion=function(id){
     console.log(this.history[id]);
-    this.root.children=this.history[id][2].children;
-    this.root.values=this.history[id][2].values;
+    //this.root.children=this.history[id][2].children;
+    //this.root.values=this.history[id][2].values;
+    this.root=new Node(this.history[id][2]);
+    //this.root=this.history[id][2];
     this.draw();
 }
 
