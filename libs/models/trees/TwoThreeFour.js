@@ -62,40 +62,42 @@ Node.prototype.findIdxPos = function (val) {
 };
 
 Node.prototype.getLeft = function () {
-    return this.getLeftRecursive(this.parent, this.values[this.values.length-1]);
+    return this.getLeftRecursive(this);
 };
 
-Node.prototype.getLeftRecursive = function (n, value) {
-    if(n==undefined) //root node
-        return n;
-    var idx=n.findIdxPos(value);
-    if(idx==0&&n.parent!=undefined)
+Node.prototype.getLeftRecursive = function (n) {
+    if(n.parent==undefined) //root node
+        return undefined;
+    var idx=n.parent.findIdxPos(this.values[0]);
+    if(idx==0)
     {
-        var x=this.getLeftRecursive(n.parent, value);
+        var x=this.getLeftRecursive(n.parent);
         if(x==undefined)
             return undefined;
-        return x.children[x.children.length-1];
+        return x.parent.children[x.children.length-1];
     }
     else
-        return n.children[idx-1];
+        return n.parent.children[idx-1];
 };
 
 
 Node.prototype.getRight = function () {
-    return this.getRightRecurse(this.parent, this.values[this.values.length-1]);
+    return this.getRightRecurse(this);
 };
 
-Node.prototype.getRightRecurse = function (n, value) {
-    var idx=n.findIdxPos(value);
-    if(idx>=n.values.length&&n.parent!=undefined)
+Node.prototype.getRightRecurse = function (n) {
+    if(n.parent==undefined) //root node
+        return undefined;
+    var idx=n.parent.findIdxPos(this.values[this.values.length-1]);
+    if(idx>=n.values.length)
     {
-        var x=this.getRightRecurse(n.parent, value);
+        var x=this.getRightRecurse(n.parent);
         if(x==undefined)
             return undefined;
-        return x.children[0];
+        return x.parent.children[0];
     }
     else
-        return n.children[idx+1];
+        return n.parent.children[idx+1];
 };
 
 Node.prototype.insertIndex = function (value, node) {
@@ -280,21 +282,22 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
     var idx = 0;
     while (value > node.values[idx] && idx < node.values.length)
         idx++;
-    if(node.children.length>0)
-        this.removeIndex(node.children[idx], value);
-//else if (node.children.length > idx)
-    //    this.removeIndex(node.children[idx], value);
-    if (node.values[idx] != value)
-        return;
+
     var left = node.getLeft();
     var right = node.getRight();
+
+    if(node.children.length>0)
+        this.removeIndex(node.children[idx], value);
 
     node.values.splice(idx, 1);
     if (node.values.length == 0) //underflow
     {
         console.log("left:" + left);
         console.log("right:" + right);
-        if ((left == undefined ||
+        if(node==this.root){
+            this.root=node;
+        }
+        else if ((left == undefined ||
             left.values.length == 1) &&
             (right == undefined ||
             right.values.length == 1)) {
@@ -305,7 +308,11 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
                 }
                 var pos=node.parent.findIdxPos(value);
                 left.values.push(node.parent.values[pos-1]);
+                node.parent.values.splice(pos-1,1);
                 node.parent.children.splice(pos,1);
+                if(node.parent==this.root&&node.parent.values.length==0){
+                    this.root=left;
+                }
             }
             else if(right!=undefined) {
                 if(node.children.length>0) {
@@ -313,7 +320,11 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
                 }
                 var pos=node.parent.findIdxPos(value);
                 right.values.splice(0,0,node.parent.values[pos-1]);
+                node.parent.values.splice(pos-1,1);
                 node.parent.children.splice(pos-1,1);
+                if(node.parent==this.root&&node.parent.values.length==0){
+                    this.root=right;
+                }
             }
             //case 1:
             // Bedingung: Alle adjazenten Knoten (benachbarte Knoten auf derselben Tiefe) zum unterlaufenden Knoten v sind 2-Knoten
@@ -331,7 +342,7 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
             //Man verschiebt einen Schlüssel von w nach u
             //Nach dem Verschieben ist der Unterlauf behoben
             var v=node;
-            if(left!=undefined&&left.values.length==2||left.values.length==3) {
+            if(left!=undefined&&(left.values.length==2||left.values.length==3)) {
                 console.log("left")
                 //Man verschiebt ein Kind von w nach v
                 if(left.children.length>0) {
@@ -340,7 +351,6 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
                 }
                 //Man verschiebt einen Schlüssel von u nach v
                 var pos=node.parent.findIdxPos(value)
-                //left.values.splice(0,node.parent.values[pos]);
                 node.values.splice(0,0,node.parent.values[pos-1]);
                 node.parent.values.splice(pos-1,1);
                 //Man verschiebt einen Schlüssel von w nach u
