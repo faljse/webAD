@@ -289,7 +289,9 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
     if(node.children.length>0)
         this.removeIndex(node.children[idx], value);
 
-    node.values.splice(idx, 1);
+    if(node.values[idx]==value)
+        node.values.splice(idx, 1);
+
     if (node.values.length == 0) //underflow
     {
         console.log("left:" + left);
@@ -319,9 +321,9 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
                     right.children.splice(0, 0, node.children[0]);
                 }
                 var pos=node.parent.findIdxPos(value);
-                right.values.splice(0,0,node.parent.values[pos-1]);
-                node.parent.values.splice(pos-1,1);
-                node.parent.children.splice(pos-1,1);
+                right.values.splice(0,0,node.parent.values[pos]);
+                node.parent.values.splice(pos, 1);
+                node.parent.children.splice(pos, 1);
                 if(node.parent==this.root&&node.parent.values.length==0){
                     this.root=right;
                 }
