@@ -304,9 +304,7 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
                     left.children.splice(left.children.length, 0, node.children[0]);
                 }
                 var pos=node.parent.findIdxPos(value);
-                left.values.spl
                 left.values.push(node.parent.values[pos-1]);
-                node.parent.values.splice(pos-1,1);
                 node.parent.children.splice(pos,1);
             }
             else if(right!=undefined) {
