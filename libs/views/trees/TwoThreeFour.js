@@ -310,6 +310,10 @@ TwoThreeFourView.prototype.draw=function(){
 	this.stage.setHeight(h);
 	this.stage.removeChildren();
 	this.stage.add(layer);
+
+	if(this.model.history.length<this.listbox.length)
+		this.listbox.options.length=0;
+
 	var diff=this.model.history.length-this.listbox.length;
 	var start=this.listbox.length;
 	for(var i=0;i<diff;i++)

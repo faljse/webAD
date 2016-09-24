@@ -12,7 +12,7 @@
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-'use strict';
+"use strict";
 
 function Node(node) {
     this.values = [];
@@ -22,7 +22,7 @@ function Node(node) {
     this.yPosition = 0;
 
     if (node !== undefined) {
-        for (var i = 0; i < node.children.length; i++) {
+        for(var i = 0; i < node.children.length; i++) {
             this.children.push(new Node(node.children[i]));
             this.children[i].parent=this;
         }
@@ -66,10 +66,14 @@ Node.prototype.getLeft = function () {
 };
 
 Node.prototype.getLeftRecursive = function (n, value) {
+    if(n==undefined) //root node
+        return n;
     var idx=n.findIdxPos(value);
     if(idx==0&&n.parent!=undefined)
     {
         var x=this.getLeftRecursive(n.parent, value);
+        if(x==undefined)
+            return undefined;
         return x.children[x.children.length-1];
     }
     else
@@ -86,6 +90,8 @@ Node.prototype.getRightRecurse = function (n, value) {
     if(idx>=n.values.length&&n.parent!=undefined)
     {
         var x=this.getRightRecurse(n.parent, value);
+        if(x==undefined)
+            return undefined;
         return x.children[0];
     }
     else
@@ -129,7 +135,6 @@ function TwoThreeFour() {
     this.history = [];
     this.root = undefined;
     this.actStateID = -1;
-    this.N = 2; //234 Tree
 };
 
 TwoThreeFour.prototype.init = function () {
@@ -142,10 +147,8 @@ TwoThreeFour.prototype.pushToHistory = function (type, text, node) {
 
 TwoThreeFour.prototype.loadVersion=function(id){
     console.log(this.history[id]);
-    //this.root.children=this.history[id][2].children;
-    //this.root.values=this.history[id][2].values;
     this.root=new Node(this.history[id][2]);
-    //this.root=this.history[id][2];
+    this.currentVersion=id;
     this.draw();
 }
 
@@ -166,7 +169,6 @@ TwoThreeFour.prototype.copy = function (toCopy) {
 };
 
 TwoThreeFour.prototype.replaceThis = function (toCopy) {
-
     this.root = undefined;
     function recursivePreorderTraversal(tree, node) {
         if (node == undefined)
@@ -176,7 +178,6 @@ TwoThreeFour.prototype.replaceThis = function (toCopy) {
         recursivePreorderTraversal(tree, node.leftChild);
         recursivePreorderTraversal(tree, node.rightChild);
     }
-
     recursivePreorderTraversal(this, toCopy.root);
 }
 
@@ -193,7 +194,7 @@ TwoThreeFour.prototype.lastState = function () {
 }
 
 TwoThreeFour.prototype.insertNode = function (node, value) {
-    debug.debug('insert node: ' + value);
+    debug.debug("insert node: " + value);
     var newNode = null;
     for (var i = 0; i < node.children.length; i++) {
         if (i == node.values.length || node.values[i] > value) {
@@ -207,13 +208,13 @@ TwoThreeFour.prototype.insertNode = function (node, value) {
         node.insertIndex(value);
         if (node.values.length >= 4) //overflow->split
         {
-			this.pushToHistory("minor", "leaf overflow", this.root);
-            debug.debug('overflow->split');
+            this.pushToHistory("minor", "leaf overflow", this.root);
+            debug.debug("overflow->split");
             newNode = node.split();
             if (newNode != null && node == this.root) {
                 this.root = newNode;
-				debug.debug('new root: ' + newNode.toString());
-				this.pushToHistory("minor", "new root", this.root);
+                debug.debug("new root: " + newNode.toString());
+                this.pushToHistory("minor", "new root", this.root);
             }
             return newNode;
         }
@@ -224,14 +225,14 @@ TwoThreeFour.prototype.insertNode = function (node, value) {
         return newNode;
     node.insertIndex(value, newNode);
 
-	if (node.values.length >= 4) { //overflow
-		this.pushToHistory("minor", "overflow", this.root);
-		var retNode= node.split();
-		if(node==this.root)
-			this.root=retNode;
-		this.pushToHistory("minor", "new root", this.root);
-		return retNode;
-	}
+    if(node.values.length >= 4) { //overflow
+        // this.pushToHistory("minor", "overflow", this.root);
+        var retNode= node.split();
+        if(node==this.root)
+            this.root=retNode;
+        this.pushToHistory("minor", "new root", this.root);
+        return retNode;
+    }
 }
 
 TwoThreeFour.prototype.add = function (val) {
@@ -256,7 +257,6 @@ TwoThreeFour.prototype.saveInDB = function () {
 }
 
 TwoThreeFour.prototype.search = function () {
-
     var value = parseInt(prompt("Search for:"));
     if (isNaN(value))
         return;
@@ -292,8 +292,8 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
     node.values.splice(idx, 1);
     if (node.values.length == 0) //underflow
     {
-        console.log('left:' + left);
-        console.log('right:' + right);
+        console.log("left:" + left);
+        console.log("right:" + right);
         if ((left == undefined ||
             left.values.length == 1) &&
             (right == undefined ||
