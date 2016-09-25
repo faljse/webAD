@@ -89,22 +89,42 @@
 	
 	function pre(){
 		clearTimes();
-		tree.prev();
+		var selectBox = document.getElementById("versions");
+		selectBox.selectedIndex=selectBox.selectedIndex-1;
+		changeFunc();
 	}
 	
 	function next(){
 		clearTimes();
-		tree.next();
+		var selectBox = document.getElementById("versions");
+		selectBox.selectedIndex=selectBox.selectedIndex+1;
+		changeFunc();
 	}
 	
 	function first(){
 		clearTimes();
-		tree.firstState();
+		var selectBox = document.getElementById("versions");
+		for(var i=1;;i++){
+			var selectedValue = selectBox.options[selectBox.selectedIndex-i].value;
+			if(tree.history[selectedValue][0]=='major'){
+				selectBox.selectedIndex=selectBox.selectedIndex-i;
+				changeFunc();
+				return;
+			}
+		}
 	}
 	
 	function last(){
 		clearTimes();
-		tree.lastState();
+		var selectBox = document.getElementById("versions");
+		for(var i=1;;i++){
+			var selectedValue = selectBox.options[selectBox.selectedIndex+i].value;
+			if(tree.history[selectedValue][0]=='major'){
+				selectBox.selectedIndex=selectBox.selectedIndex+i;
+				changeFunc();
+				return;
+			}
+		}
 	}
 	
 	function zoomIn(){
@@ -118,6 +138,7 @@
 	function changeFunc() {
 		var selectBox = document.getElementById("versions");
 		var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+
 		tree.loadVersion(selectedValue);
 	}
 
