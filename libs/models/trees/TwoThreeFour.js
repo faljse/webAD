@@ -237,9 +237,7 @@ TwoThreeFour.prototype.insertNode = function (node, value) {
     }
 }
 
-TwoThreeFour.prototype.add = function (val) {
-    if (val == undefined)
-        var val = parseInt(prompt("Add:"));
+TwoThreeFour.prototype.addInt = function (val) {
     if (isNaN(val))return;
     var node = new Node();
     node.value = val;
@@ -252,6 +250,17 @@ TwoThreeFour.prototype.add = function (val) {
     this.insertNode(this.root, val);
     this.pushToHistory("major", "", this.root);
     this.draw();
+}
+
+TwoThreeFour.prototype.add = function (val) {
+    if (val == undefined){
+        var strings = prompt("Add:").split(" ");
+        for(var i=0;i<strings.length;i++){
+            this.addInt(parseInt(strings[i]));
+        }
+    }
+    else
+        this.addInt(val);
 }
 
 
