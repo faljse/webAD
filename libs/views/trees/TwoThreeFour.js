@@ -220,9 +220,10 @@ TwoThreeFourView.prototype.draw=function(){
 						width: 50+(0.6*_radiusX),
 						//align: 'center'
 					});
-
-					layer.add(circle);
-					layer.add(val);
+					if(j<3||tmpNodes[i].values[j]!=undefined) {
+						layer.add(circle);
+						layer.add(val);
+					}
 
 				}
 
