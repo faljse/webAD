@@ -281,6 +281,8 @@ TwoThreeFour.prototype.remove = function () {
     var strings = prompt("Remove:").split(" ");
     for (var i = 0; i < strings.length; i++) {
         this.removeIndex(this.root, parseInt(strings[i]));
+        this.pushToHistory("major", "", this.root);
+        this.draw();
     }
     this.draw();
 }
@@ -298,14 +300,15 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
 
     if (node.values[idx] == value)
         node.values.splice(idx, 1);
-    this.pushToHistory("minor", "removed key", this.root);
     if (node.values.length == 0) //underflow
     {
         console.log("left:" + left);
         console.log("right:" + right);
+        this.pushToHistory("minor", "underflow", this.root);
+
         if (node == this.root) {
-            this.root = node;
             this.pushToHistory("minor", "swap root", this.root);
+            this.root = node;
         }
         else if ((left == undefined ||
             left.values.length == 1) &&
@@ -336,7 +339,6 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
                     this.root = right;
                 }
             }
-            this.pushToHistory("minor", "merge, case 1", this.root);
             //case 1:
             // Bedingung: Alle adjazenten Knoten (benachbarte Knoten auf derselben Tiefe) zum unterlaufenden Knoten v sind 2-Knoten
             //Man verschmilzt v mit einem/dem adjazenten Nachbarn w und verschiebt den nicht mehr benötigten
@@ -383,7 +385,6 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
                 node.parent.values.splice(pos, 0, right.values[0]);
                 right.values.splice(0, 1);
             }
-            this.pushToHistory("minor", "merge, case 2", this.root);
         }
     }
 }
