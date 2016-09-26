@@ -270,9 +270,60 @@ TwoThreeFour.prototype.search = function () {
     if (isNaN(value))
         return;
     var tree = this;
-    if (tree.root == undefined) {
+    if (tree.root == undefined)
         return;
+
+    var actNode=this.root;
+    actNode.color="#FF8000";
+    this.draw();
+
+    function whileLoop(tree,actNode){
+        setTimeout(function (){
+            //find index of pointer leading to target:
+            //assume its on first place
+            var index=0;
+            //if not, iterate
+            if(val>=actNode.keys[0]){
+                for(var i=0;i<actNode.keys.length;i++){
+                    if(val>=actNode.keys[i] && (actNode.keys[i+1]==undefined || val<actNode.keys[i+1])){
+                        index=i+1; // because pointer.length+1 == keys.length
+                        break;
+                    }
+                }
+            }
+            actNode.neededKid=index;
+            actNode=actNode.pointers[index];
+            actNode.color="#FF8000";
+
+            actNode.parent.color="#ADFF2F";
+            tree.draw();
+            actNode.parent.neededKid=undefined;
+            if(!actNode.is_leaf)whileLoop(tree,actNode);
+            else{
+                function notFound(tree){
+                    setTimeout(function(){
+                        actNode.color="#ADFF2F";
+                        actNode.parent.neededKid=undefined;
+                        tree.draw();
+                        return;
+                    },1000)
+                }
+                notFound(tree);
+            }
+
+        },1000)
     }
+
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    function notFound(tree){
+        setTimeout(function(){
+            actNode.color="#ADFF2F";
+            tree.draw();
+            return;
+        },1000)
+    }
+    if(!actNode.is_leaf)whileLoop(tree,actNode);
+    else notFound(this);
 }
 
 TwoThreeFour.prototype.remove = function () {
