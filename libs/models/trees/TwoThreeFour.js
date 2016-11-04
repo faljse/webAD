@@ -310,7 +310,6 @@ TwoThreeFour.prototype.search = function () {
                 }
                 notFound(tree);
             }
-
         },1000)
     }
 
@@ -349,8 +348,13 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
     if (node.children.length > 0)
         this.removeIndex(node.children[idx], value);
 
-    if (node.values[idx] == value)
-        node.values.splice(idx, 1);
+    if (node.values[idx] == value){
+        if(node.children.length>0)
+            return; //dont remove inner index elements
+        else
+            node.values.splice(idx, 1);
+    }
+
     if (node.values.length == 0) //underflow
     {
         console.log("left:" + left);
