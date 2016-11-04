@@ -26,7 +26,7 @@
         var c1 = document.getElementById("container1");
         var list = document.getElementById("versions");
         tree = new TwoThreeFour();
-        tree.view.initStage(c1, list);
+        tree.view.initStage(c1);
         tree.init();
     }
 
@@ -45,8 +45,7 @@
         var tmpNodes = [];
         if (tree.root != undefined)
             tmpNodes.push(tree.root);
-        var finished = new Boolean();
-        finished = false;
+        var finished = false;
 
         do {
             for (var i = 0; i < tmpNodes.length; i++) {
@@ -70,8 +69,12 @@
         } while (!finished);
     }
 
-    function add(val) {
-        tree.add(val);
+    function add() {
+        tree.add();
+        updateListBox();
+        var selectBox = document.getElementById("versions");
+        selectBox.selectedIndex = selectBox.length-1;
+        changeFunc();
     }
 
     function search() {
@@ -79,8 +82,11 @@
     }
 
     function rem() {
-        clearTimes();
         tree.remove();
+        updateListBox();
+        var selectBox = document.getElementById("versions");
+        selectBox.selectedIndex = selectBox.options.length-1;
+        changeFunc();
     }
 
     function random() {
@@ -138,15 +144,31 @@
 
     function changeFunc() {
         var selectBox = document.getElementById("versions");
+        console.log("index: "+selectBox.selectedIndex);
         var selectedValue = selectBox.options[selectBox.selectedIndex].value;
-
+        console.log("value: "+selectedValue);
         tree.loadVersion(selectedValue);
     }
 
+    function updateListBox() {
+        var selectBox = document.getElementById("versions");
+        if(tree.history.length<selectBox.length)
+            selectBox.options.length=0;
 
+        var diff=tree.history.length-selectBox.length;
+        var start=selectBox.length;
+        for(var i=0;i<diff;i++)
+        {
+            var opt = document.createElement('option');
+            opt.value = start+i;
+            var entry=tree.history[start+i];
+            opt.innerHTML = (start+i)+' '+entry[0]+' '+entry[1];
+            selectBox.appendChild(opt);
+        }
+    }
 </script>
 
-<body id="body" class="page" onload="init();example();return false;">
+<body id="body" class="page" onload="init(); example(); updateListBox(); return false;">
 <header id="header">
     <ul>
         <li><a href="javascript:_class('info', 'hide')" class="info">Info</a></li>

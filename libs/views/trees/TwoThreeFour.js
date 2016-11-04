@@ -12,6 +12,7 @@
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+"use strict";
 
 function TwoThreeFourView(_model){
 	this.model=_model;
@@ -19,8 +20,7 @@ function TwoThreeFourView(_model){
 	this.scale=1;
 }
 
-TwoThreeFourView.prototype.initStage=function(cont, listbox){
-	this.listbox = listbox;
+TwoThreeFourView.prototype.initStage=function(cont){
 	this.stage = new Kinetic.Stage({
 		container: cont,
 		draggable: true,
@@ -50,8 +50,7 @@ TwoThreeFourView.prototype.draw=function(){
 	if(this.model.root!=undefined)
 		tmpNodes.push(this.model.root);
 	var level=1;
-	var finished=new Boolean();
-	finished=false;
+	var finished=false;
 
 	var oldNodes=[];
 
@@ -80,7 +79,7 @@ TwoThreeFourView.prototype.draw=function(){
 			}
 
 			tmpNodes[i].xPosition=xPos;
-			yPos=_radius+level*2*_radius;
+			var yPos=_radius+level*2*_radius;
 			tmpNodes[i].yPosition=yPos;
 			if(i==tmpNodes.length-1){
 				lastY=yPos+_radius;
@@ -99,7 +98,7 @@ TwoThreeFourView.prototype.draw=function(){
 		}
 
 		tmpNodes=[];
-		oldNodes3=tmpNodes;//to set X of last level
+		var oldNodes3=tmpNodes;//to set X of last level
 		do{
 			if(oldNodes2[0]!=undefined){
 				for(var i=0;i<oldNodes2[0].children.length;i++){
@@ -184,8 +183,7 @@ TwoThreeFourView.prototype.draw=function(){
 	tmpNodes=[];
 	if(this.model.root!=undefined)
 		tmpNodes.push(this.model.root);
-	var level=1;
-	var finished=new Boolean();
+	level=1;
 	finished=false;
 
 	//determine x and y, draw
@@ -283,7 +281,8 @@ TwoThreeFourView.prototype.draw=function(){
 		}
 
 		finished=true;
-		var oldNodes=tmpNodes; tmpNodes=[];
+		oldNodes=tmpNodes;
+		tmpNodes=[];
 
 		do{
 			if(oldNodes[0]!=undefined){
@@ -302,7 +301,7 @@ TwoThreeFourView.prototype.draw=function(){
 	}while(!finished);
 
 	var w=lastX+50*this.scale;
-	var h=lastY+50*this.scale
+	var h=lastY+50*this.scale;
 
 	if(h<500)h=500;
 	if(w<1000)w=1000;
@@ -311,18 +310,4 @@ TwoThreeFourView.prototype.draw=function(){
 	this.stage.setHeight(h);
 	this.stage.removeChildren();
 	this.stage.add(layer);
-
-	if(this.model.history.length<this.listbox.length)
-		this.listbox.options.length=0;
-
-	var diff=this.model.history.length-this.listbox.length;
-	var start=this.listbox.length;
-	for(var i=0;i<diff;i++)
-	{
-		var opt = document.createElement('option');
-		opt.value = start+i;
-		var entry=this.model.history[start+i]
-		opt.innerHTML = (start+i)+' '+entry[0]+' '+entry[1];
-		this.listbox.appendChild(opt);
-	}
 }

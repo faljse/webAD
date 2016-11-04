@@ -44,7 +44,7 @@ Node.prototype.split = function () {
     var right = new Node();
     right.parent = parent;
     right.values = this.values.slice(3);
-    right.children = this.children.slice(3)
+    right.children = this.children.slice(3);
     for (var i = 0; i < right.children.length; i++)
         right.children[i].parent = right;
     parent.children.push(this, right);
@@ -138,7 +138,8 @@ function TwoThreeFour() {
 };
 
 TwoThreeFour.prototype.init = function () {
-    //this.pushto
+    this.pushToHistory("init","",new Node());
+    this.currentVersion=0;
 };
 
 TwoThreeFour.prototype.pushToHistory = function (type, text, node) {
@@ -150,7 +151,7 @@ TwoThreeFour.prototype.loadVersion = function (id) {
     this.root = new Node(this.history[id][2]);
     this.currentVersion = id;
     this.draw();
-}
+};
 
 TwoThreeFour.prototype.copy = function (toCopy) {
     var newTree = new TwoThreeFour();
@@ -248,23 +249,20 @@ TwoThreeFour.prototype.addInt = function (val) {
 
     if (this.root == undefined) {
         this.root = node;
-        this.draw();
-        //this.saveInDB();
     }
     this.insertNode(this.root, val);
     this.pushToHistory("major", "", this.root);
-    this.draw();
+    this.currentVersion=this.history.length-1;
 }
 
-TwoThreeFour.prototype.add = function (val) {
-    if (val == undefined) {
-        var strings = prompt("Add:").split(" ");
-        for (var i = 0; i < strings.length; i++) {
-            this.addInt(parseInt(strings[i]));
-        }
+TwoThreeFour.prototype.add = function () {
+    var strings = prompt("Add:");
+    if(strings==null)
+        return;
+    strings=strings.split(" ");
+    for (var i = 0; i < strings.length; i++) {
+        this.addInt(parseInt(strings[i]));
     }
-    else
-        this.addInt(val);
 }
 
 TwoThreeFour.prototype.saveInDB = function () {
@@ -303,7 +301,8 @@ TwoThreeFour.prototype.search = function () {
             actNode.parent.color="#ADFF2F";
             tree.draw();
             actNode.parent.neededKid=undefined;
-            if(!actNode.is_leaf)whileLoop(tree,actNode);
+            if(!actNode.is_leaf)
+                whileLoop(tree,actNode);
             else{
                 function notFound(tree){
                     setTimeout(function(){
@@ -326,20 +325,22 @@ TwoThreeFour.prototype.search = function () {
             return;
         },1000)
     }
-    if(!actNode.is_leaf)whileLoop(tree,actNode);
+    if(!actNode.is_leaf)
+        whileLoop(tree,actNode);
     else notFound(this);
 }
 
 TwoThreeFour.prototype.remove = function () {
     if (this.root == undefined)
         return;
-    var strings = prompt("Remove:").split(" ");
+    var strings = prompt("Remove:");
+    if(strings==null)
+            return;
+    strings=strings.split(" ");
     for (var i = 0; i < strings.length; i++) {
         this.removeIndex(this.root, parseInt(strings[i]));
         this.pushToHistory("major", "", this.root);
-        this.draw();
     }
-    this.draw();
 }
 
 TwoThreeFour.prototype.removeIndex = function (node, value) {
@@ -455,7 +456,7 @@ TwoThreeFour.prototype.random = function () {
     var number = parseInt(20);
 
     for (var i = 0; i < number; i++) {
-        this.add(parseInt(Math.random() * 50, 10));
+        this.addInt(parseInt(Math.random() * 50, 10));
     }
     this.draw();
 }
@@ -465,7 +466,7 @@ TwoThreeFour.prototype.example = function () {
     var numbers = [5, 3, 10, 12, 1, 6, 13, 14];
 
     for (var i = 0; i < numbers.length; i++) {
-        this.add(numbers[i]);
+        this.addInt(numbers[i]);
     }
     this.draw();
 }
