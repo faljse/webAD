@@ -197,7 +197,12 @@ TwoThreeFour.prototype.lastState = function () {
 TwoThreeFour.prototype.insertNode = function (node, value) {
     debug.debug("insert node: " + value);
     var newNode = null;
+    for (var i = 0; i < node.values.length; i++)
+        if(node.values[i]==value)
+            return; //value exists.
+
     for (var i = 0; i < node.children.length; i++) {
+
         if (i == node.values.length || node.values[i] > value) {
             newNode = this.insertNode(node.children[i], value);
             break;
