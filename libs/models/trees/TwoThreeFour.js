@@ -372,11 +372,8 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
             node.values.splice(idx, 1);
     }
 
-    //50 51 52 53
-    //50 51 12 13 14
     if (node.values.length == 0) //underflow
     {
-
         console.log("left: " + ((left!=undefined)?left.values:"-"));
         console.log("right: " + ((right!=undefined)?right.values:"-"));
         this.pushToHistory("minor", "underflow", this.root);
@@ -424,7 +421,6 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
                     this.root = right;
                 }
             }
-
         }
         else {
             console.log("case 2, verschieben")
@@ -453,7 +449,7 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
                 left.values.splice(-1, 1);
             }
             else {
-                console.log("right") //TODO: haut irgendwas zam 3 6 10 12
+                console.log("right")
                 //Man verschiebt ein Kind von w nach v
                 if (right.children.length > 0) {
                     node.children.splice(0, 0, right.children[0]);
