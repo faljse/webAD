@@ -62,40 +62,52 @@ Node.prototype.findIdxPos = function (val) {
 };
 
 Node.prototype.getLeft = function () {
-    return this.getLeftRecursive(this);
+    if(this.parent==undefined)
+        return undefined;
+    var value=this.values[0];
+    var idx=this.parent.findIdxPos(value);
+    if(idx>0)
+        return this.parent.children[idx-1];
+    else return undefined;
 };
 
-Node.prototype.getLeftRecursive = function (n) {
-    if (n.parent == undefined) //root node
-        return undefined;
-    var idx = n.parent.findIdxPos(this.values[0]);
+Node.prototype.getLeftRecursive = function (n, value) {
+    var idx = n.findIdxPos(value);
     if (idx == 0) {
-        var x = this.getLeftRecursive(n.parent);
-        if (x == undefined)
+        if(n.parent==undefined)
             return undefined;
-        return x.parent.children[x.children.length - 1];
+        var x = this.getLeftRecursive(n.parent,  n.values[0]);
+        if(x==undefined)
+            return undefined;
+        return x.children[x.children.length - 1];
     }
     else
-        return n.parent.children[idx - 1];
+        return n.children[idx-1];
 };
 
 
 Node.prototype.getRight = function () {
-    return this.getRightRecurse(this);
+    if(this.parent==undefined)
+        return undefined;
+    var value=this.values[this.values.length - 1];
+    var idx=this.parent.findIdxPos(value);
+    if(idx<this.parent.children.length -1)
+        return this.parent.children[idx+1];
+    else return undefined;
 };
 
-Node.prototype.getRightRecurse = function (n) {
-    if (n.parent == undefined) //root node
-        return undefined;
-    var idx = n.parent.findIdxPos(this.values[this.values.length - 1]);
+Node.prototype.getRightRecurse = function (n, value) {
+    var idx = n.findIdxPos(value);
     if (idx >= n.values.length) {
-        var x = this.getRightRecurse(n.parent);
-        if (x == undefined)
+        if(n.parent==undefined)
             return undefined;
-        return x.parent.children[0];
+        var x = this.getRightRecurse(n.parent, n.values[n.values.length-1]);
+        if(x==undefined)
+            return undefined;
+        return x.children[0];
     }
     else
-        return n.parent.children[idx + 1];
+        return n.children[idx + 1];
 };
 
 Node.prototype.insertIndex = function (value, node) {
@@ -347,7 +359,6 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
     var idx = 0;
     while (value > node.values[idx] && idx < node.values.length)
         idx++;
-
     var left = node.getLeft();
     var right = node.getRight();
 
@@ -361,51 +372,59 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
             node.values.splice(idx, 1);
     }
 
+    //50 51 52 53
+    //50 51 10
     if (node.values.length == 0) //underflow
     {
-        console.log("left:" + left);
-        console.log("right:" + right);
+
+        console.log("left: " + ((left!=undefined)?left.values:"-"));
+        console.log("right: " + ((right!=undefined)?right.values:"-"));
         this.pushToHistory("minor", "underflow", this.root);
 
         if (node == this.root) {
             this.pushToHistory("minor", "swap root", this.root);
             this.root = node;
+            this.parent = undefined;
         }
         else if ((left == undefined ||
             left.values.length == 1) &&
             (right == undefined ||
             right.values.length == 1)) {
-            console.log("case 1, verschmelzen")
-            if (left != undefined) {
-                if (node.children.length > 0) {
-                    left.children.splice(left.children.length, 0, node.children[0]);
-                }
-                var pos = node.parent.findIdxPos(value);
-                left.values.push(node.parent.values[pos - 1]);
-                node.parent.values.splice(pos - 1, 1);
-                node.parent.children.splice(pos, 1);
-                if (node.parent == this.root && node.parent.values.length == 0) {
-                    left.parent=undefined;
-                    this.root = left;
-                }
-            }
-            else if (right != undefined) {
-                if (node.children.length > 0) {
-                    right.children.splice(0, 0, node.children[0]);
-                }
-                var pos = node.parent.findIdxPos(value);
-                right.values.splice(0, 0, node.parent.values[pos]);
-                node.parent.values.splice(pos, 1);
-                node.parent.children.splice(pos, 1);
-                if (node.parent == this.root && node.parent.values.length == 0) {
-                    right.parent=undefined;
-                    this.root = right;
-                }
-            }
             //case 1:
             // Bedingung: Alle adjazenten Knoten (benachbarte Knoten auf derselben Tiefe) zum unterlaufenden Knoten v sind 2-Knoten
             //Man verschmilzt v mit einem/dem adjazenten Nachbarn w und verschiebt den nicht mehr benötigten
             //Schlüssel vom Elternknoten u zu dem verschmolzenen Knoten v´
+            console.log("case 1, verschmelzen")
+            if (left != undefined) {
+                console.log("case 1, verschmelzen: left")
+                if (node.children.length > 0) {
+                    left.children.splice(left.children.length, 0, node.children[0]);
+                }
+                var pos = node.parent.findIdxPos(value);
+                left.values.push(left.parent.values[pos - 1]);
+                node.parent.values.splice(pos - 1, 1);
+                node.parent.children.splice(pos, 1);
+                if (node.parent == this.root && node.parent.values.length == 0) {
+                    node.parent = undefined;
+                    this.root = left;
+                }
+            }
+            else if (right != undefined) {
+                console.log("case 1, verschmelzen: right")
+
+                if (node.children.length > 0) {
+                    right.children.splice(0, 0, node.children[0]);
+                }
+                var pos = right.parent.findIdxPos(value);
+                right.values.splice(0, 0, node.parent.values[pos]);
+                node.parent.values.splice(pos, 1);
+                node.parent.children.splice(pos, 1);
+                if (node.parent == this.root && node.parent.values.length == 0) {
+                    node.parent = undefined;
+                    this.root = right;
+                }
+            }
+
         }
         else {
             console.log("case 2, verschieben")
@@ -426,26 +445,26 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
                     left.children.splice(-1, 1);
                 }
                 //Man verschiebt einen Schlüssel von u nach v
-                var pos = node.parent.findIdxPos(value)
-                node.values.splice(0, 0, node.parent.values[pos - 1]);
-                node.parent.values.splice(pos - 1, 1);
+                var pos = left.parent.findIdxPos(value)
+                node.values.splice(0, 0, left.parent.values[pos - 1]);
+                left.parent.values.splice(pos - 1, 1);
                 //Man verschiebt einen Schlüssel von w nach u
-                node.parent.values.splice(pos - 1, 0, left.values[left.values.length - 1]);
+                left.parent.values.splice(pos - 1, 0, left.values[left.values.length - 1]);
                 left.values.splice(-1, 1);
             }
             else {
-                console.log("right")
+                console.log("right") //TODO: haut irgendwas zam 3 6 10 12
                 //Man verschiebt ein Kind von w nach v
                 if (right.children.length > 0) {
                     node.children.splice(0, 0, right.children[0]);
                     node.children.splice(0, 1);
                 }
                 //Man verschiebt einen Schlüssel von u nach v
-                var pos = node.parent.findIdxPos(value)
-                node.values.splice(0, 0, node.parent.values[pos]);
-                node.parent.values.splice(pos, 1);
+                var pos = right.parent.findIdxPos(value)
+                node.values.splice(0, 0, right.parent.values[pos]);
+                right.parent.values.splice(pos, 1);
                 //Man verschiebt einen Schlüssel von w nach u
-                node.parent.values.splice(pos, 0, right.values[0]);
+                right.parent.values.splice(pos, 0, right.values[0]);
                 right.values.splice(0, 1);
             }
         }
