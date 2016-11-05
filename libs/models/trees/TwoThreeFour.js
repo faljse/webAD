@@ -385,6 +385,7 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
                 node.parent.values.splice(pos - 1, 1);
                 node.parent.children.splice(pos, 1);
                 if (node.parent == this.root && node.parent.values.length == 0) {
+                    left.parent=undefined;
                     this.root = left;
                 }
             }
@@ -397,6 +398,7 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
                 node.parent.values.splice(pos, 1);
                 node.parent.children.splice(pos, 1);
                 if (node.parent == this.root && node.parent.values.length == 0) {
+                    right.parent=undefined;
                     this.root = right;
                 }
             }
@@ -406,7 +408,7 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
             //Schlüssel vom Elternknoten u zu dem verschmolzenen Knoten v´
         }
         else {
-            console.log("case 2");
+            console.log("case 2, verschieben")
             //case 2:
             //Verschieben von Schlüsseln
             //Bedingung: Ein adjazenter Knoten (benachbarter Knoten auf derselben Tiefe) w zum unterlaufenden
