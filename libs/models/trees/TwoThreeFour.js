@@ -373,7 +373,7 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
     }
 
     //50 51 52 53
-    //50 51 10
+    //50 51 12 13 14
     if (node.values.length == 0) //underflow
     {
 
@@ -405,7 +405,7 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
                 node.parent.values.splice(pos - 1, 1);
                 node.parent.children.splice(pos, 1);
                 if (node.parent == this.root && node.parent.values.length == 0) {
-                    node.parent = undefined;
+                    left.parent = undefined;
                     this.root = left;
                 }
             }
@@ -420,7 +420,7 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
                 node.parent.values.splice(pos, 1);
                 node.parent.children.splice(pos, 1);
                 if (node.parent == this.root && node.parent.values.length == 0) {
-                    node.parent = undefined;
+                    right.parent = undefined;
                     this.root = right;
                 }
             }
