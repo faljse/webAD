@@ -30,6 +30,7 @@ function Node(node) {
         this.xPosition = node.xPosition;
         this.yPosition = node.yPosition;
         this.values = node.values;
+        this.color = node.color;
     }
 }
 
@@ -111,7 +112,6 @@ Node.prototype.getRightRecurse = function (n, value) {
 };
 
 Node.prototype.insertIndex = function (value, node) {
-
     var idx = 0;
     while (value > this.values[idx] && idx < this.values.length)
         idx++;
@@ -165,48 +165,6 @@ TwoThreeFour.prototype.loadVersion = function (id) {
     this.draw();
 };
 
-TwoThreeFour.prototype.copy = function (toCopy) {
-    var newTree = new TwoThreeFour();
-
-    function recursivePreorderTraversal(newTree, node) {
-        if (node == undefined)
-            return;
-
-        newTree.add(node.value);
-        recursivePreorderTraversal(newTree, node.leftChild);
-        recursivePreorderTraversal(newTree, node.rightChild);
-    }
-
-    recursivePreorderTraversal(newTree, toCopy.root);
-    return newTree;
-};
-
-TwoThreeFour.prototype.replaceThis = function (toCopy) {
-    this.root = undefined;
-    function recursivePreorderTraversal(tree, node) {
-        if (node == undefined)
-            return;
-
-        tree.add(node.value);
-        recursivePreorderTraversal(tree, node.leftChild);
-        recursivePreorderTraversal(tree, node.rightChild);
-    }
-
-    recursivePreorderTraversal(this, toCopy.root);
-}
-
-TwoThreeFour.prototype.prev = function () {
-}
-
-TwoThreeFour.prototype.next = function () {
-}
-
-TwoThreeFour.prototype.firstState = function () {
-}
-
-TwoThreeFour.prototype.lastState = function () {
-}
-
 TwoThreeFour.prototype.insertNode = function (node, value) {
     debug.debug("insert node: " + value);
     var newNode = null;
@@ -215,7 +173,6 @@ TwoThreeFour.prototype.insertNode = function (node, value) {
             return; //value exists.
 
     for (var i = 0; i < node.children.length; i++) {
-
         if (i == node.values.length || node.values[i] > value) {
             newNode = this.insertNode(node.children[i], value);
             break;
@@ -227,9 +184,12 @@ TwoThreeFour.prototype.insertNode = function (node, value) {
         node.insertIndex(value);
         if (node.values.length >= 4) //overflow->split
         {
-            this.pushToHistory("minor", "leaf overflow", this.root);
+            node.color="#FF8000";
+            this.pushToHistory("minor", "leaf overflow, split", this.root);
             debug.debug("overflow->split");
             newNode = node.split();
+            newNode.color="#FF8000";
+
             if (newNode != null && node == this.root) {
                 this.root = newNode;
                 debug.debug("new root: " + newNode.toString());
@@ -243,12 +203,17 @@ TwoThreeFour.prototype.insertNode = function (node, value) {
     if (newNode == null)
         return newNode;
     node.insertIndex(value, newNode);
+    node.color="#FF8000";
+    newNode.color="#FF8000";
+    this.pushToHistory("minor", "E leaf overflow, split", this.root);
 
     if (node.values.length >= 4) { //overflow
-        // this.pushToHistory("minor", "overflow", this.root);
+        this.pushToHistory("minor", "root overflow, split", this.root);
         var retNode = node.split();
         if (node == this.root)
             this.root = retNode;
+        node.color="#FF8000";
+        newNode.color="#ADFF2F";
         this.pushToHistory("minor", "new root", this.root);
         return retNode;
     }
@@ -263,6 +228,7 @@ TwoThreeFour.prototype.addInt = function (val) {
         this.root = node;
     }
     this.insertNode(this.root, val);
+    this.resetColor(this.root);
     this.pushToHistory("major", "", this.root);
     this.currentVersion=this.history.length-1;
 }
@@ -277,12 +243,19 @@ TwoThreeFour.prototype.add = function () {
     }
 }
 
+TwoThreeFour.prototype.resetColor = function (node) {
+    node.color="#FFFFFF";
+    for (var i = 0; i < node.children.length; i++) {
+        this.resetColor(node.children[i]);
+    }
+}
+
 TwoThreeFour.prototype.saveInDB = function () {
 }
 
 TwoThreeFour.prototype.search = function () {
-    var value = parseInt(prompt("Search for:"));
-    if (isNaN(value))
+    var val = parseInt(prompt("Search for:"));
+    if (isNaN(val))
         return;
     var tree = this;
     if (tree.root == undefined)
@@ -298,43 +271,37 @@ TwoThreeFour.prototype.search = function () {
             //assume its on first place
             var index=0;
             //if not, iterate
-            if(val>=actNode.keys[0]){
-                for(var i=0;i<actNode.keys.length;i++){
-                    if(val>=actNode.keys[i] && (actNode.keys[i+1]==undefined || val<actNode.keys[i+1])){
+            if(val>=actNode.values[0]){
+                for(var i=0;i<actNode.values.length;i++){
+                    if(val>=actNode.values[i] && (actNode.values[i+1]==undefined || val<actNode.values[i+1])){
                         index=i+1; // because pointer.length+1 == keys.length
                         break;
                     }
                 }
             }
             actNode.neededKid=index;
-            actNode=actNode.pointers[index];
+            actNode=actNode.children[index];
             actNode.color="#FF8000";
 
             actNode.parent.color="#ADFF2F";
             tree.draw();
             actNode.parent.neededKid=undefined;
-            if(!actNode.is_leaf)
+            if(actNode.children.length>0)
                 whileLoop(tree,actNode);
             else{
-                function notFound(tree){
-                    setTimeout(function(){
-                        actNode.color="#ADFF2F";
-                        actNode.parent.neededKid=undefined;
-                        tree.draw();
-                        return;
-                    },1000)
-                }
-                notFound(tree);
+                setTimeout(function(){
+                    for(var i=0;i<actNode.values.length;i++){
+                        if(actNode.values[i]==val){
+                            actNode.color="#ADFF2F";
+                            tree.draw();
+                            return;
+                        }
+                    }
+                    actNode.color="#FF0000";
+                    tree.draw();
+                    return;
+                },1000);
             }
-        },1000)
-    }
-
-    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    function notFound(tree){
-        setTimeout(function(){
-            actNode.color="#ADFF2F";
-            tree.draw();
-            return;
         },1000)
     }
     if(!actNode.is_leaf)
@@ -351,6 +318,7 @@ TwoThreeFour.prototype.remove = function () {
     strings=strings.split(" ");
     for (var i = 0; i < strings.length; i++) {
         this.removeIndex(this.root, parseInt(strings[i]));
+        this.resetColor(this.root);
         this.pushToHistory("major", "", this.root);
     }
 }
@@ -379,9 +347,14 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
         this.pushToHistory("minor", "underflow", this.root);
 
         if (node == this.root) {
-            this.pushToHistory("minor", "swap root", this.root);
+            node.color="#FF8000";
+            this.pushToHistory("minor", "S underflow: swap root", this.root);
+
             this.root = node;
             this.parent = undefined;
+            node.color="#FF8000";
+            this.pushToHistory("minor", "E underflow: swap root", this.root);
+
         }
         else if ((left == undefined ||
             left.values.length == 1) &&
@@ -391,9 +364,10 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
             // Bedingung: Alle adjazenten Knoten (benachbarte Knoten auf derselben Tiefe) zum unterlaufenden Knoten v sind 2-Knoten
             //Man verschmilzt v mit einem/dem adjazenten Nachbarn w und verschiebt den nicht mehr benötigten
             //Schlüssel vom Elternknoten u zu dem verschmolzenen Knoten v´
-            console.log("case 1, verschmelzen")
             if (left != undefined) {
-                console.log("case 1, verschmelzen: left")
+                left.color="#ADFF2F";
+                node.color="#FF8000";
+                this.pushToHistory("minor", "S case 1 uf, merge left", this.root);
                 if (node.children.length > 0) {
                     left.children.splice(left.children.length, 0, node.children[0]);
                 }
@@ -405,10 +379,13 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
                     left.parent = undefined;
                     this.root = left;
                 }
+                node.color="#ADFF2F";
+                this.pushToHistory("minor", "E case 1 uf, merge left", this.root);
             }
             else if (right != undefined) {
-                console.log("case 1, verschmelzen: right")
-
+                right.color="#ADFF2F";
+                node.color="#FF8000";
+                this.pushToHistory("minor", "S case 1 uf, merge right", this.root);
                 if (node.children.length > 0) {
                     right.children.splice(0, 0, node.children[0]);
                 }
@@ -420,9 +397,13 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
                     right.parent = undefined;
                     this.root = right;
                 }
+                node.color="#ADFF2F";
+                this.pushToHistory("minor", "E case 1 uf, merge right", this.root);
+
             }
         }
         else {
+
             console.log("case 2, verschieben")
             //case 2:
             //Verschieben von Schlüsseln
@@ -434,6 +415,9 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
             //Nach dem Verschieben ist der Unterlauf behoben
             var v = node;
             if (left != undefined && (left.values.length == 2 || left.values.length == 3)) {
+                left.color="#ADFF2F";
+                node.color="#FF8000";
+                this.pushToHistory("minor", "S case 2 uf, balance left", this.root);
                 console.log("left")
                 //Man verschiebt ein Kind von w nach v
                 if (left.children.length > 0) {
@@ -447,8 +431,15 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
                 //Man verschiebt einen Schlüssel von w nach u
                 left.parent.values.splice(pos - 1, 0, left.values[left.values.length - 1]);
                 left.values.splice(-1, 1);
+                left.color="#ADFF2F";
+                node.color="#ADFF2F";
+                this.pushToHistory("minor", "E case 2 uf, balance left", this.root);
+
             }
             else {
+                right.color="#ADFF2F";
+                node.color="#FF8000";
+                this.pushToHistory("minor", "S case 2 uf, balance right", this.root);
                 console.log("right")
                 //Man verschiebt ein Kind von w nach v
                 if (right.children.length > 0) {
@@ -462,6 +453,9 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
                 //Man verschiebt einen Schlüssel von w nach u
                 right.parent.values.splice(pos, 0, right.values[0]);
                 right.values.splice(0, 1);
+                left.color="#ADFF2F";
+                node.color="#ADFF2F";
+                this.pushToHistory("minor", "E case 2 uf, balance right", this.root);
             }
         }
     }

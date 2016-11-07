@@ -103,14 +103,16 @@
     function pre() {
         clearTimes();
         var selectBox = document.getElementById("versions");
-        selectBox.selectedIndex = selectBox.selectedIndex - 1;
+        if(selectBox.selectedIndex>0)
+            selectBox.selectedIndex = selectBox.selectedIndex - 1;
         changeFunc();
     }
 
     function next() {
         clearTimes();
         var selectBox = document.getElementById("versions");
-        selectBox.selectedIndex = selectBox.selectedIndex + 1;
+        if(selectBox.selectedIndex<selectBox.options.length -1)
+            selectBox.selectedIndex = selectBox.selectedIndex + 1;
         changeFunc();
     }
 
