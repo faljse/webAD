@@ -217,7 +217,7 @@ TwoThreeFour.prototype.insertNode = function (node, value) {
         this.pushToHistory("minor", "new root", this.root);
         return retNode;
     }
-}
+};
 
 TwoThreeFour.prototype.addInt = function (val) {
     if (isNaN(val))return;
@@ -231,7 +231,7 @@ TwoThreeFour.prototype.addInt = function (val) {
     this.resetColor(this.root);
     this.pushToHistory("major", "", this.root);
     this.currentVersion=this.history.length-1;
-}
+};
 
 TwoThreeFour.prototype.add = function () {
     var strings = prompt("Add:");
@@ -241,17 +241,17 @@ TwoThreeFour.prototype.add = function () {
     for (var i = 0; i < strings.length; i++) {
         this.addInt(parseInt(strings[i]));
     }
-}
+};
 
 TwoThreeFour.prototype.resetColor = function (node) {
     node.color="#FFFFFF";
     for (var i = 0; i < node.children.length; i++) {
         this.resetColor(node.children[i]);
     }
-}
+};
 
 TwoThreeFour.prototype.saveInDB = function () {
-}
+};
 
 TwoThreeFour.prototype.search = function () {
     var val = parseInt(prompt("Search for:"));
@@ -307,7 +307,7 @@ TwoThreeFour.prototype.search = function () {
     if(!actNode.is_leaf)
         whileLoop(tree,actNode);
     else notFound(this);
-}
+};
 
 TwoThreeFour.prototype.remove = function () {
     if (this.root == undefined)
@@ -318,23 +318,25 @@ TwoThreeFour.prototype.remove = function () {
     strings=strings.split(" ");
     for (var i = 0; i < strings.length; i++) {
         var val = parseInt(strings[i]);
+        this.pushToHistory("major", "start remove "+val, this.root);
         var res = this.removeIndex(this.root, val);
         if(res != undefined){
+            this.pushToHistory("minor", "found next value: "+res, this.root);
             this.removeIndex(this.root, res);
-            this.pushToHistory("major", "remove next value", this.root);
+            this.pushToHistory("minor", "removed next value "+res, this.root);
             this.replaceValue(this.root, val, res);
-            this.pushToHistory("major", "replace value", this.root);
+            this.pushToHistory("minor", "replace value "+val+" with "+ res, this.root);
         }
         this.resetColor(this.root);
-        this.pushToHistory("major", "", this.root);
+        this.pushToHistory("major", "done remove "+val, this.root);
     }
-}
+};
 
 TwoThreeFour.prototype.searchNext = function (node) {
     if(node.children.length>0)
         return this.searchNext(node.children[0]);
     return node.values[0];
-}
+};
 
 TwoThreeFour.prototype.replaceValue = function (node, value, repWith) {
     var idx = 0;
@@ -345,7 +347,7 @@ TwoThreeFour.prototype.replaceValue = function (node, value, repWith) {
     }
     else if(node.children.length>0)
         this.replaceValue(node.children[idx], value, repWith);
-}
+};
 
 TwoThreeFour.prototype.removeIndex = function (node, value) {
     var res=undefined;
@@ -480,7 +482,7 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
         }
     }
     return res;
-}
+};
 
 
 TwoThreeFour.prototype.random = function () {
@@ -491,7 +493,7 @@ TwoThreeFour.prototype.random = function () {
         this.addInt(parseInt(Math.random() * 50, 10));
     }
     this.draw();
-}
+};
 
 TwoThreeFour.prototype.example = function () {
     this.root = undefined;
@@ -501,9 +503,9 @@ TwoThreeFour.prototype.example = function () {
         this.addInt(numbers[i]);
     }
     this.draw();
-}
+};
 
 TwoThreeFour.prototype.draw = function () {
     this.view.draw();
-}
+};
 
