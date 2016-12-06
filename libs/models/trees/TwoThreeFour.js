@@ -18,6 +18,8 @@ function Node(node) {
     this.values = [];
     this.children = [];
     this.parent = undefined;
+    this.xPosition = 0;
+    this.yPosition = 0;
 
     if (node !== undefined) {
         for (var i = 0; i < node.children.length; i++) {
@@ -30,7 +32,8 @@ function Node(node) {
         this.values = node.values;
         this.color = node.color;
     }
-};
+}
+
 
 Node.prototype.isLeaf = function () {
     return this.children.length === 0;
@@ -69,6 +72,21 @@ Node.prototype.getLeft = function () {
     else return undefined;
 };
 
+Node.prototype.getLeftRecursive = function (n, value) {
+    var idx = n.findIdxPos(value);
+    if (idx == 0) {
+        if(n.parent==undefined)
+            return undefined;
+        var x = this.getLeftRecursive(n.parent,  n.values[0]);
+        if(x==undefined)
+            return undefined;
+        return x.children[x.children.length - 1];
+    }
+    else
+        return n.children[idx-1];
+};
+
+
 Node.prototype.getRight = function () {
     if(this.parent==undefined)
         return undefined;
@@ -77,6 +95,20 @@ Node.prototype.getRight = function () {
     if(idx<this.parent.children.length -1)
         return this.parent.children[idx+1];
     else return undefined;
+};
+
+Node.prototype.getRightRecurse = function (n, value) {
+    var idx = n.findIdxPos(value);
+    if (idx >= n.values.length) {
+        if(n.parent==undefined)
+            return undefined;
+        var x = this.getRightRecurse(n.parent, n.values[n.values.length-1]);
+        if(x==undefined)
+            return undefined;
+        return x.children[0];
+    }
+    else
+        return n.children[idx + 1];
 };
 
 Node.prototype.insertIndex = function (value, node) {
