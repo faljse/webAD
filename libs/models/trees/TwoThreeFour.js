@@ -401,7 +401,7 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
                     this.root = left;
                 }
                 node.color = this.view.colActive;
-                this.pushToHistory("minor", "Fall 1 underflow, merge left", this.root);
+                this.pushToHistory("minor", "case 1 underflow, merge left", this.root);
             }
             else if (right != undefined) {
                 right.color = this.view.colActive;
@@ -418,7 +418,7 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
                     this.root = right;
                 }
                 node.color = this.view.colActive;
-                this.pushToHistory("minor", "Fall 1 underflow, merge right", this.root);
+                this.pushToHistory("minor", "case 1 underflow, merge right", this.root);
             }
         }
         else {
@@ -450,7 +450,7 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
                 left.values.splice(-1, 1);
                 left.color = this.view.colActive;
                 node.color = this.view.colActive;
-                this.pushToHistory("minor", "Fall 2 underflow, balance left", this.root);
+                this.pushToHistory("minor", "case 2 underflow, balance left", this.root);
             }
             else {
                 right.color = this.view.colActive;
@@ -470,7 +470,7 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
                 right.values.splice(0, 1);
                 right.color = this.view.colActive;
                 node.color = this.view.colActive;
-                this.pushToHistory("minor", "Fall 2 underflow, balance right", this.root);
+                this.pushToHistory("minor", "case 2 underflow, balance right", this.root);
             }
         }
     }
