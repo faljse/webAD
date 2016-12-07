@@ -1,6 +1,6 @@
 /*
  Software License Agreement (BSD License)
- http://wwwlab.cs.univie.ac.at/~a1100570/webAD/
+ https://github.com/faljse/webAD
  Copyright (c), Martin Kunz
  All rights reserved.
 

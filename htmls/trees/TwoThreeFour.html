@@ -174,6 +174,45 @@
             selectBox.appendChild(opt);
         }
     }
+
+    function resetFields(){
+        $("#colActive").val(tree.colActive);
+        $("#colInvalid").val(vec.colInvalid);
+        $("#colNotFound").val(vec.colNotFound);
+        var sp = $("#speed");
+        sp.val(vec.speed);
+    }
+
+    function resetVersions(){
+        tree.history=[];
+        tree.pushToHistory('major', 'clear history', tree.root)
+        updateListBox();
+    }
+
+    function removeOptions(selectbox)
+    {
+        var i;
+        for(i = selectbox.options.length - 1 ; i >= 0 ; i--)
+        {
+            selectbox.remove(i);
+        }
+    }
+
+
+    function colorChange(){
+        if(tree!=undefined){
+            var colActive= $("#colActive");
+            var colInvalid= $("#colInvalid");
+            var colNotFound= $("#colNotFound");
+            tree.colActive=colActive.val();
+            tree.colInvalid=colInvalid.val();
+            tree.colNotFound=colNotFound.val();
+            tree.updateColors();
+        }
+        else{
+            resetFields();
+        }
+    }
 </script>
 
 <body id="body" class="page" onload="init(); example(); updateListBox(); return false;">
@@ -224,14 +263,14 @@
     <div class="closer" onclick="javascript:_class('info', 'hide')"></div>
     <a href="javascript:_class('info', 'hide')" class="close">X</a>
     <div class="pole"><h2>Info</h2>
-        Legend: Blue lines lead to a child with smaller value, red to a child with greater/equal value
-        <br>
         Ein 2-3-4 Baum ist ein Mehrwegbaum mit den folgenden Eigenschaften
         Größeneigenschaft: jeder interne Knoten hat mindestens 2 und maximal 4 Kinder
         Tiefeneigenschaft: alle externe Knoten besitzen dieselbe Tiefe
         Abhängig von der Anzahl der Kinder heißt ein interner Knoten 2-Knoten, 3-Knoten oder 4-Knoten
-        <img src="../../images/Binary_search_tree.png" alt="bstimage">
-        <div>[1]: <a href="http://en.wikipedia.org/wiki/Binary_search_tree" target="_blank">http://en.wikipedia.org/wiki/Binary_search_tree</a>
+        <img style="width: 100%" src="../../images/234Tree.png" alt="234Tree image">
+        <div>[1]: <a href="https://cewebs.cs.univie.ac.at/ADS/ss15/" target="_blank">https://cewebs.cs.univie.ac.at/ADS/ss15/</a>
+        <br/>
+            <div>[2]: <a href="https://en.wikipedia.org/wiki/2%E2%80%933%E2%80%934_tree" target="_blank">https://en.wikipedia.org/wiki/2%E2%80%933%E2%80%934_tree</a>
         </div>
     </div>
 </div>
@@ -240,6 +279,15 @@
     <div class="closer" onclick="javascript:_class('config', 'hide')"></div>
     <a href="javascript:_class('config', 'hide')" class="close">X</a>
     <div class="pole"><h2>Config</h2>
+        Empty history:
+        <input type="button" name="resetVersions" style="width:40px" id="resetVersions" onclick="resetVersions();return false;" >
+        <br>Color (Active):
+        <input type="color" name="col1" id="col1" onchange="colorChange();return false;">
+        <br>Color (Invalid):
+        <input type="color" name="col2" id="col2" onchange="colorChange();return false;">
+        <br>Color (Not Found):
+        <input type="color" name="col3" id="col3" onchange="colorChange();return false;">
+    </div>
     </div>
 </div>
 <div id="about" class="popup hide">
