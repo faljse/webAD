@@ -28,7 +28,6 @@
         tree.view.initStage(c1);
         tree.init();
         colorInit();
-
     }
 
     function example() {
@@ -50,7 +49,7 @@
 
         do {
             for (var i = 0; i < tmpNodes.length; i++) {
-                if (tmpNodes[i] != undefined)tmpNodes[i].color = "#ADFF2F";
+                if (tmpNodes[i] != undefined) tmpNodes[i].color = "#ADFF2F";
             }
             finished = true;
             var oldNodes = tmpNodes;
@@ -75,7 +74,7 @@
         tree.add();
         updateListBox();
         var selectBox = document.getElementById("versions");
-        selectBox.selectedIndex = selectBox.length-1;
+        selectBox.selectedIndex = selectBox.length - 1;
         changeFunc();
     }
 
@@ -88,7 +87,7 @@
         tree.remove();
         updateListBox();
         var selectBox = document.getElementById("versions");
-        selectBox.selectedIndex = selectBox.options.length-1;
+        selectBox.selectedIndex = selectBox.options.length - 1;
         changeFunc();
     }
 
@@ -97,14 +96,14 @@
         tree.random();
         updateListBox();
         var selectBox = document.getElementById("versions");
-        selectBox.selectedIndex = selectBox.options.length-1;
+        selectBox.selectedIndex = selectBox.options.length - 1;
         changeFunc();
     }
 
     function pre() {
         clearTimes();
         var selectBox = document.getElementById("versions");
-        if(selectBox.selectedIndex>0)
+        if (selectBox.selectedIndex > 0)
             selectBox.selectedIndex = selectBox.selectedIndex - 1;
         changeFunc();
     }
@@ -112,7 +111,7 @@
     function next() {
         clearTimes();
         var selectBox = document.getElementById("versions");
-        if(selectBox.selectedIndex<selectBox.options.length -1)
+        if (selectBox.selectedIndex < selectBox.options.length - 1)
             selectBox.selectedIndex = selectBox.selectedIndex + 1;
         changeFunc();
     }
@@ -153,62 +152,59 @@
 
     function changeFunc() {
         var selectBox = document.getElementById("versions");
-        console.log("index: "+selectBox.selectedIndex);
+        console.log("index: " + selectBox.selectedIndex);
         var selectedValue = selectBox.options[selectBox.selectedIndex].value;
-        console.log("value: "+selectedValue);
+        console.log("value: " + selectedValue);
         tree.loadVersion(selectedValue);
     }
 
     function updateListBox() {
         var selectBox = document.getElementById("versions");
-        if(tree.history.length<selectBox.length)
-            selectBox.options.length=0;
+        if (tree.history.length < selectBox.length)
+            selectBox.options.length = 0;
 
-        var diff=tree.history.length-selectBox.length;
-        var start=selectBox.length;
-        for(var i=0;i<diff;i++)
-        {
+        var diff = tree.history.length - selectBox.length;
+        var start = selectBox.length;
+        for (var i = 0; i < diff; i++) {
             var opt = document.createElement('option');
-            opt.value = start+i;
-            var entry=tree.history[start+i];
-            opt.innerHTML = (start+i)+' '+entry[0]+' '+entry[1];
+            opt.value = start + i;
+            var entry = tree.history[start + i];
+            opt.innerHTML = (start + i) + ' ' + (entry[0]=='minor'?'*':'') + ' ' + entry[1];
             selectBox.appendChild(opt);
         }
     }
 
-    function colorInit(){
+    function colorInit() {
         $("#colActive").val(tree.view.colActive);
         $("#colInvalid").val(tree.view.colInvalid);
         $("#colNotFound").val(tree.view.colNotFound);
-   }
+    }
 
-    function resetVersions(){
-        tree.history=[];
+    function resetVersions() {
+        tree.history = [];
         tree.pushToHistory('major', 'clear history', tree.root)
         updateListBox();
     }
 
-    function removeOptions(selectbox)
-    {
+    function removeOptions(selectbox) {
         var i;
-        for(i = selectbox.options.length - 1 ; i >= 0 ; i--)
-        {
+        for (i = selectbox.options.length - 1; i >= 0; i--) {
             selectbox.remove(i);
         }
     }
 
 
-    function colorChange(){
-        if(tree!=undefined){
-            var colActive= $("#colActive");
-            var colInvalid= $("#colInvalid");
-            var colNotFound= $("#colNotFound");
-            tree.view.colActive=colActive.val();
-            tree.view.colInvalid=colInvalid.val();
-            tree.view.colNotFound=colNotFound.val();
+    function colorChange() {
+        if (tree != undefined) {
+            var colActive = $("#colActive");
+            var colInvalid = $("#colInvalid");
+            var colNotFound = $("#colNotFound");
+            tree.view.colActive = colActive.val();
+            tree.view.colInvalid = colInvalid.val();
+            tree.view.colNotFound = colNotFound.val();
             tree.view.updateColors();
         }
-        else{
+        else {
             resetFields();
         }
     }
@@ -268,18 +264,19 @@
         Abhängig von der Anzahl der Kinder heißt ein interner Knoten 2-Knoten, 3-Knoten oder 4-Knoten
         <img style="width: 100%" src="../../images/234Tree.png" alt="234Tree image">
         <div>[1]: <a href="https://cewebs.cs.univie.ac.at/ADS/ss15/" target="_blank">https://cewebs.cs.univie.ac.at/ADS/ss15/</a>
-        <br/>
+            <br/>
             <div>[2]: <a href="https://en.wikipedia.org/wiki/2%E2%80%933%E2%80%934_tree" target="_blank">https://en.wikipedia.org/wiki/2%E2%80%933%E2%80%934_tree</a>
+            </div>
         </div>
     </div>
-</div>
 </div>
 <div id="config" class="popup hide">
     <div class="closer" onclick="javascript:_class('config', 'hide')"></div>
     <a href="javascript:_class('config', 'hide')" class="close">X</a>
     <div class="pole"><h2>Config</h2>
 
-        <input type="button" name="resetVersions" value="reset versions"  id="resetVersions" onclick="resetVersions();return false;" >
+        <input type="button" name="resetVersions" value="reset versions" id="resetVersions"
+               onclick="resetVersions();return false;">
         <br>Color (Active):
         <input type="color" name="colActive" id="colActive" onchange="colorChange(); return false;">
         <br>Color (Invalid):
@@ -287,7 +284,7 @@
         <br>Color (Not Found):
         <input type="color" name="colNotFound" id="colNotFound" onchange="colorChange(); return false;">
     </div>
-    </div>
+</div>
 </div>
 <div id="about" class="popup hide">
     <div class="closer" onclick="javascript:_class('about', 'hide')"></div>
