@@ -1,24 +1,24 @@
 /*
- cycle.js
- 2016-05-01
+    cycle.js
+    2016-05-01
 
- Public Domain.
+    Public Domain.
 
- NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
+    NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
 
- This code should be minified before deployment.
- See http://javascript.crockford.com/jsmin.html
+    This code should be minified before deployment.
+    See http://javascript.crockford.com/jsmin.html
 
- USE YOUR OWN COPY. IT IS EXTREMELY UNWISE TO LOAD CODE FROM SERVERS YOU DO
- NOT CONTROL.
- */
+    USE YOUR OWN COPY. IT IS EXTREMELY UNWISE TO LOAD CODE FROM SERVERS YOU DO
+    NOT CONTROL.
+*/
 
 /*jslint eval, for */
 
 /*property
- $ref, decycle, forEach, isArray, keys, length, push, retrocycle, stringify,
- test
- */
+    $ref, decycle, forEach, indexOf, isArray, keys, length, push, retrocycle,
+    stringify, test
+*/
 
 if (typeof JSON.decycle !== "function") {
     JSON.decycle = function decycle(object, replacer) {
@@ -141,7 +141,7 @@ if (typeof JSON.retrocycle !== "function") {
 //      return JSON.retrocycle(JSON.parse(s));
 // produces an array containing a single element which is the array itself.
 
-        var px = /^\$(?:\[(?:\d+|\"(?:[^\\\"\u0000-\u001f]|\\([\\\"\/bfnrt]|u[0-9a-zA-Z]{4}))*\")\])*$/;
+        var px = /^\$(?:\[(?:\d+|"(?:[^\\"\u0000-\u001f]|\\([\\"\/bfnrt]|u[0-9a-zA-Z]{4}))*")\])*$/;
 
         (function rez(value) {
 

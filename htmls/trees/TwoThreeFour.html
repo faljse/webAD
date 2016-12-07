@@ -19,7 +19,6 @@
     <script src="../../libs/views/trees/TwoThreeFour.js"></script>
     <script src="../../libs/models/trees/TwoThreeFour.js"></script>
 </head>
-
 <script>
     var tree = undefined;
     function init() {
@@ -28,6 +27,8 @@
         tree = new TwoThreeFour();
         tree.view.initStage(c1);
         tree.init();
+        colorInit();
+
     }
 
     function example() {
@@ -175,13 +176,11 @@
         }
     }
 
-    function resetFields(){
-        $("#colActive").val(tree.colActive);
-        $("#colInvalid").val(vec.colInvalid);
-        $("#colNotFound").val(vec.colNotFound);
-        var sp = $("#speed");
-        sp.val(vec.speed);
-    }
+    function colorInit(){
+        $("#colActive").val(tree.view.colActive);
+        $("#colInvalid").val(tree.view.colInvalid);
+        $("#colNotFound").val(tree.view.colNotFound);
+   }
 
     function resetVersions(){
         tree.history=[];
@@ -204,10 +203,10 @@
             var colActive= $("#colActive");
             var colInvalid= $("#colInvalid");
             var colNotFound= $("#colNotFound");
-            tree.colActive=colActive.val();
-            tree.colInvalid=colInvalid.val();
-            tree.colNotFound=colNotFound.val();
-            tree.updateColors();
+            tree.view.colActive=colActive.val();
+            tree.view.colInvalid=colInvalid.val();
+            tree.view.colNotFound=colNotFound.val();
+            tree.view.updateColors();
         }
         else{
             resetFields();
@@ -279,14 +278,14 @@
     <div class="closer" onclick="javascript:_class('config', 'hide')"></div>
     <a href="javascript:_class('config', 'hide')" class="close">X</a>
     <div class="pole"><h2>Config</h2>
-        Empty history:
-        <input type="button" name="resetVersions" style="width:40px" id="resetVersions" onclick="resetVersions();return false;" >
+
+        <input type="button" name="resetVersions" value="reset versions"  id="resetVersions" onclick="resetVersions();return false;" >
         <br>Color (Active):
-        <input type="color" name="col1" id="col1" onchange="colorChange();return false;">
+        <input type="color" name="colActive" id="colActive" onchange="colorChange(); return false;">
         <br>Color (Invalid):
-        <input type="color" name="col2" id="col2" onchange="colorChange();return false;">
+        <input type="color" name="colInvalid" id="colInvalid" onchange="colorChange(); return false;">
         <br>Color (Not Found):
-        <input type="color" name="col3" id="col3" onchange="colorChange();return false;">
+        <input type="color" name="colNotFound" id="colNotFound" onchange="colorChange(); return false;">
     </div>
     </div>
 </div>

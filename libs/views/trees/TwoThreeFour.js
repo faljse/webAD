@@ -18,6 +18,9 @@ function TwoThreeFourView(_model){
 	this.model=_model;
 	this.model.order=2;
 	this.scale=1;
+	this.colActive='#00FF00';
+    this.colInvalid='#FFBB00';
+    this.colNotFound='#FF0000';
 }
 
 TwoThreeFourView.prototype.initStage=function(cont){
@@ -27,17 +30,21 @@ TwoThreeFourView.prototype.initStage=function(cont){
 		width: 0,
 		height: 0
 	});
+};
+
+TwoThreeFourView.prototype.updateColors=function(){
+	console.log("update colors");
 }
 
 TwoThreeFourView.prototype.zoomIn=function(){
 	if(this.scale<3)this.scale=this.scale+0.1;
 	this.draw();
-}
+};
 
 TwoThreeFourView.prototype.zoomOut=function(){
 	if(this.scale>0.5)this.scale=this.scale-0.1;
 	this.draw();
-}
+};
 
 TwoThreeFourView.prototype.draw=function(){
 
@@ -310,4 +317,4 @@ TwoThreeFourView.prototype.draw=function(){
 	this.stage.setHeight(h);
 	this.stage.removeChildren();
 	this.stage.add(layer);
-}
+};

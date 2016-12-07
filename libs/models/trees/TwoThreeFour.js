@@ -63,47 +63,46 @@ Node.prototype.findIdxPos = function (val) {
 };
 
 Node.prototype.getLeft = function () {
-    if(this.parent==undefined)
+    if (this.parent == undefined)
         return undefined;
-    var value=this.values[0];
-    var idx=this.parent.findIdxPos(value);
-    if(idx>0)
-        return this.parent.children[idx-1];
+    var value = this.values[0];
+    var idx = this.parent.findIdxPos(value);
+    if (idx > 0)
+        return this.parent.children[idx - 1];
     else return undefined;
 };
 
 Node.prototype.getLeftRecursive = function (n, value) {
     var idx = n.findIdxPos(value);
     if (idx == 0) {
-        if(n.parent==undefined)
+        if (n.parent == undefined)
             return undefined;
-        var x = this.getLeftRecursive(n.parent,  n.values[0]);
-        if(x==undefined)
+        var x = this.getLeftRecursive(n.parent, n.values[0]);
+        if (x == undefined)
             return undefined;
         return x.children[x.children.length - 1];
     }
     else
-        return n.children[idx-1];
+        return n.children[idx - 1];
 };
 
-
 Node.prototype.getRight = function () {
-    if(this.parent==undefined)
+    if (this.parent == undefined)
         return undefined;
-    var value=this.values[this.values.length - 1];
-    var idx=this.parent.findIdxPos(value);
-    if(idx<this.parent.children.length -1)
-        return this.parent.children[idx+1];
+    var value = this.values[this.values.length - 1];
+    var idx = this.parent.findIdxPos(value);
+    if (idx < this.parent.children.length - 1)
+        return this.parent.children[idx + 1];
     else return undefined;
 };
 
 Node.prototype.getRightRecurse = function (n, value) {
     var idx = n.findIdxPos(value);
     if (idx >= n.values.length) {
-        if(n.parent==undefined)
+        if (n.parent == undefined)
             return undefined;
-        var x = this.getRightRecurse(n.parent, n.values[n.values.length-1]);
-        if(x==undefined)
+        var x = this.getRightRecurse(n.parent, n.values[n.values.length - 1]);
+        if (x == undefined)
             return undefined;
         return x.children[0];
     }
@@ -150,12 +149,16 @@ function TwoThreeFour() {
 };
 
 TwoThreeFour.prototype.init = function () {
-    this.pushToHistory("init","",new Node());
-    this.currentVersion=0;
+    this.pushToHistory("init", "", new Node());
+    this.currentVersion = 0;
 };
 
 TwoThreeFour.prototype.pushToHistory = function (type, text, node) {
-    this.history.push([type, text, JSON.retrocycle(JSON.parse(JSON.stringify(JSON.decycle(node))))]);
+    this.history.push([type, text,
+        JSON.retrocycle( //Zyklische Referenzen wiederherstellen
+            JSON.parse( //Aus serialisierter Darstellung Objekte erstellen
+                JSON.stringify( //Objekte in JSON-Format wandeln
+                    JSON.decycle(node))))]); //Zyklische Referenzen auflösen
 };
 
 TwoThreeFour.prototype.loadVersion = function (id) {
@@ -166,33 +169,25 @@ TwoThreeFour.prototype.loadVersion = function (id) {
 };
 
 TwoThreeFour.prototype.insertNode = function (node, value) {
-    debug.debug("insert node: " + value);
     var newNode = null;
     for (var i = 0; i < node.values.length; i++)
-        if(node.values[i]==value)
+        if (node.values[i] == value)
             return; //value exists.
-
     for (var i = 0; i < node.children.length; i++) {
         if (i == node.values.length || node.values[i] > value) {
             newNode = this.insertNode(node.children[i], value);
             break;
         }
     }
-
-    if (node.children.length == 0) //unterste ebene
-    {
+    if (node.children.length == 0) {//unterste ebene
         node.insertIndex(value);
-        if (node.values.length >= 4) //overflow->split
-        {
-            node.color="#FF8000";
+        if (node.values.length >= 4) {//overflow->split
+            node.color = this.view.colInvalid;
             this.pushToHistory("minor", "leaf overflow, split", this.root);
-            debug.debug("overflow->split");
             newNode = node.split();
-            newNode.color="#FF8000";
-
+            newNode.color = this.view.colInvalid;
             if (newNode != null && node == this.root) {
                 this.root = newNode;
-                debug.debug("new root: " + newNode.toString());
                 this.pushToHistory("minor", "new root", this.root);
             }
             return newNode;
@@ -203,17 +198,16 @@ TwoThreeFour.prototype.insertNode = function (node, value) {
     if (newNode == null)
         return newNode;
     node.insertIndex(value, newNode);
-    node.color="#FF8000";
-    newNode.color="#FF8000";
+    node.color = this.view.colInvalid;
+    newNode.color = this.view.colInvalid;
     this.pushToHistory("minor", "E leaf overflow, split", this.root);
-
     if (node.values.length >= 4) { //overflow
         this.pushToHistory("minor", "root overflow, split", this.root);
         var retNode = node.split();
         if (node == this.root)
             this.root = retNode;
-        node.color="#FF8000";
-        newNode.color="#ADFF2F";
+        node.color = this.view.colInvalid;
+        newNode.color = this.view.colActive;
         this.pushToHistory("minor", "new root", this.root);
         return retNode;
     }
@@ -227,24 +221,25 @@ TwoThreeFour.prototype.addInt = function (val) {
     if (this.root == undefined) {
         this.root = node;
     }
+    this.pushToHistory("major", "Begin insert "+val, this.root);
     this.insertNode(this.root, val);
     this.resetColor(this.root);
-    this.pushToHistory("major", "", this.root);
-    this.currentVersion=this.history.length-1;
+    this.pushToHistory("major", "End insert "+val, this.root);
+    this.currentVersion = this.history.length - 1;
 };
 
 TwoThreeFour.prototype.add = function () {
     var strings = prompt("Add:");
-    if(strings==null)
+    if (strings == null)
         return;
-    strings=strings.split(" ");
+    strings = strings.split(" ");
     for (var i = 0; i < strings.length; i++) {
         this.addInt(parseInt(strings[i]));
     }
 };
 
 TwoThreeFour.prototype.resetColor = function (node) {
-    node.color="#FFFFFF";
+    node.color = "#FFFFFF";
     for (var i = 0; i < node.children.length; i++) {
         this.resetColor(node.children[i]);
     }
@@ -261,51 +256,52 @@ TwoThreeFour.prototype.search = function () {
     if (tree.root == undefined)
         return;
 
-    var actNode=this.root;
-    actNode.color="#FF8000";
+    var actNode = this.root;
+    actNode.color = this.view.colInvalid;
     this.draw();
 
-    function whileLoop(tree,actNode){
-        setTimeout(function (){
+    function whileLoop(tree, actNode) {
+        setTimeout(function () {
             //find index of pointer leading to target:
             //assume its on first place
-            var index=0;
+            var index = 0;
             //if not, iterate
-            if(val>=actNode.values[0]){
-                for(var i=0;i<actNode.values.length;i++){
-                    if(val>=actNode.values[i] && (actNode.values[i+1]==undefined || val<actNode.values[i+1])){
-                        index=i+1; // because pointer.length+1 == keys.length
+            if (val >= actNode.values[0]) {
+                for (var i = 0; i < actNode.values.length; i++) {
+                    if (val >= actNode.values[i] && (actNode.values[i + 1] == undefined || val < actNode.values[i + 1])) {
+                        index = i + 1; // because pointer.length+1 == keys.length
                         break;
                     }
                 }
             }
-            actNode.neededKid=index;
-            actNode=actNode.children[index];
-            actNode.color="#FF8000";
+            actNode.neededKid = index;
+            actNode = actNode.children[index];
+            actNode.color = this.view.colInvalid;
 
-            actNode.parent.color="#ADFF2F";
+            actNode.parent.color = this.view.colActive;
             tree.draw();
-            actNode.parent.neededKid=undefined;
-            if(actNode.children.length>0)
-                whileLoop(tree,actNode);
-            else{
-                setTimeout(function(){
-                    for(var i=0;i<actNode.values.length;i++){
-                        if(actNode.values[i]==val){
-                            actNode.color="#ADFF2F";
+            actNode.parent.neededKid = undefined;
+            if (actNode.children.length > 0)
+                whileLoop(tree, actNode);
+            else {
+                setTimeout(function () {
+                    for (var i = 0; i < actNode.values.length; i++) {
+                        if (actNode.values[i] == val) {
+                            actNode.color = this.view.colActive;
                             tree.draw();
                             return;
                         }
                     }
-                    actNode.color="#FF0000";
+                    actNode.color = this.view.colNotFound;
                     tree.draw();
                     return;
-                },1000);
+                }, 1000);
             }
-        },1000)
+        }, 1000)
     }
-    if(!actNode.is_leaf)
-        whileLoop(tree,actNode);
+
+    if (!actNode.is_leaf)
+        whileLoop(tree, actNode);
     else notFound(this);
 };
 
@@ -313,27 +309,27 @@ TwoThreeFour.prototype.remove = function () {
     if (this.root == undefined)
         return;
     var strings = prompt("Remove:");
-    if(strings==null)
-            return;
-    strings=strings.split(" ");
+    if (strings == null)
+        return;
+    strings = strings.split(" ");
     for (var i = 0; i < strings.length; i++) {
         var val = parseInt(strings[i]);
-        this.pushToHistory("major", "start remove "+val, this.root);
+        this.pushToHistory("major", "Begin remove " + val, this.root);
         var res = this.removeIndex(this.root, val);
-        if(res != undefined){
-            this.pushToHistory("minor", "found next value: "+res, this.root);
+        if (res != undefined) {
+            this.pushToHistory("minor", "found next value: " + res, this.root);
             this.removeIndex(this.root, res);
-            this.pushToHistory("minor", "removed next value "+res, this.root);
+            this.pushToHistory("minor", "removed next value " + res, this.root);
             this.replaceValue(this.root, val, res);
-            this.pushToHistory("minor", "replace value "+val+" with "+ res, this.root);
+            this.pushToHistory("minor", "replace value " + val + " with " + res, this.root);
         }
         this.resetColor(this.root);
-        this.pushToHistory("major", "done remove "+val, this.root);
+        this.pushToHistory("major", "End remove " + val, this.root);
     }
 };
 
 TwoThreeFour.prototype.searchNext = function (node) {
-    if(node.children.length>0)
+    if (node.children.length > 0)
         return this.searchNext(node.children[0]);
     return node.values[0];
 };
@@ -345,40 +341,40 @@ TwoThreeFour.prototype.replaceValue = function (node, value, repWith) {
     if (node.values[idx] == value) {
         node.values[idx] = repWith;
     }
-    else if(node.children.length>0)
+    else if (node.children.length > 0)
         this.replaceValue(node.children[idx], value, repWith);
 };
 
 TwoThreeFour.prototype.removeIndex = function (node, value) {
-    var res=undefined;
+    var res = undefined;
     var idx = 0;
     while (value > node.values[idx] && idx < node.values.length)
         idx++;
     var left = node.getLeft();
     var right = node.getRight();
 
-    if (node.values[idx] == value){
-        if(node.children.length>0)
-            return this.searchNext(node.children[idx+1]); //dont remove inner index elements, return next element
+    if (node.values[idx] == value) {
+        if (node.children.length > 0)
+            return this.searchNext(node.children[idx + 1]); //dont remove inner index elements, return next element
         else
             node.values.splice(idx, 1);
     }
 
     if (node.children.length > 0)
-        res= this.removeIndex(node.children[idx], value);
+        res = this.removeIndex(node.children[idx], value);
 
     if (node.values.length == 0) //underflow
     {
-        console.log("left: " + ((left!=undefined)?left.values:"-"));
-        console.log("right: " + ((right!=undefined)?right.values:"-"));
+        console.log("left: " + ((left != undefined) ? left.values : "-"));
+        console.log("right: " + ((right != undefined) ? right.values : "-"));
         this.pushToHistory("minor", "underflow", this.root);
 
         if (node == this.root) {
-            node.color="#FF8000";
+            node.color = this.view.colInvalid;
             this.pushToHistory("minor", "S underflow: swap root", this.root);
             this.root = node;
             this.parent = undefined;
-            node.color="#FF8000";
+            node.color = this.view.colInvalid;
             this.pushToHistory("minor", "E underflow: swap root", this.root);
         }
         else if ((left == undefined ||
@@ -390,8 +386,8 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
             //Man verschmilzt v mit einem/dem adjazenten Nachbarn w und verschiebt den nicht mehr benötigten
             //Schlüssel vom Elternknoten u zu dem verschmolzenen Knoten v´
             if (left != undefined) {
-                left.color="#ADFF2F";
-                node.color="#FF8000";
+                left.color = this.view.colActive;
+                node.color = this.view.colInvalid;
                 this.pushToHistory("minor", "S case 1 uf, merge left", this.root);
                 if (node.children.length > 0) {
                     left.children.splice(left.children.length, 0, node.children[0]);
@@ -404,12 +400,12 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
                     left.parent = undefined;
                     this.root = left;
                 }
-                node.color="#ADFF2F";
+                node.color = this.view.colActive;
                 this.pushToHistory("minor", "E case 1 uf, merge left", this.root);
             }
             else if (right != undefined) {
-                right.color="#ADFF2F";
-                node.color="#FF8000";
+                right.color = this.view.colActive;
+                node.color = this.view.colInvalid;
                 this.pushToHistory("minor", "S case 1 uf, merge right", this.root);
                 if (node.children.length > 0) {
                     right.children.splice(0, 0, node.children[0]);
@@ -422,7 +418,7 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
                     right.parent = undefined;
                     this.root = right;
                 }
-                node.color="#ADFF2F";
+                node.color = this.view.colActive;
                 this.pushToHistory("minor", "E case 1 uf, merge right", this.root);
             }
         }
@@ -438,8 +434,8 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
             //Nach dem Verschieben ist der Unterlauf behoben
             var v = node;
             if (left != undefined && (left.values.length == 2 || left.values.length == 3)) {
-                left.color="#ADFF2F";
-                node.color="#FF8000";
+                left.color = this.view.colActive;
+                node.color = this.view.colInvalid;
                 this.pushToHistory("minor", "S case 2 uf, balance left", this.root);
                 console.log("left")
                 //Man verschiebt ein Kind von w nach v
@@ -454,13 +450,13 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
                 //Man verschiebt einen Schlüssel von w nach u
                 left.parent.values.splice(pos - 1, 0, left.values[left.values.length - 1]);
                 left.values.splice(-1, 1);
-                left.color="#ADFF2F";
-                node.color="#ADFF2F";
+                left.color = this.view.colActive;
+                node.color = this.view.colActive;
                 this.pushToHistory("minor", "E case 2 uf, balance left", this.root);
             }
             else {
-                right.color="#ADFF2F";
-                node.color="#FF8000";
+                right.color = this.view.colActive;
+                node.color = this.view.colInvalid;
                 this.pushToHistory("minor", "S case 2 uf, balance right", this.root);
                 console.log("right")
                 //Man verschiebt ein Kind von w nach v
@@ -475,8 +471,8 @@ TwoThreeFour.prototype.removeIndex = function (node, value) {
                 //Man verschiebt einen Schlüssel von w nach u
                 right.parent.values.splice(pos, 0, right.values[0]);
                 right.values.splice(0, 1);
-                left.color="#ADFF2F";
-                node.color="#ADFF2F";
+                left.color = this.view.colActive;
+                node.color = this.view.colActive;
                 this.pushToHistory("minor", "E case 2 uf, balance right", this.root);
             }
         }
