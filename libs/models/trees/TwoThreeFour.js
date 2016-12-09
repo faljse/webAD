@@ -183,9 +183,9 @@ TwoThreeFour.prototype.insertNode = function (node, value) {
         node.color= this.view.colActive;
         this.pushToHistory("minor", "found node", this.root);
         node.insertIndex(value);
+        this.pushToHistory("minor", "insert value", this.root);
         if (node.values.length >= 4) {//overflow->split
             node.color = this.view.colInvalid;
-            this.pushToHistory("minor", "leaf overflow, split", this.root);
             newNode = node.split();
             newNode.color = this.view.colInvalid;
             if (newNode != null && node == this.root) {
@@ -202,7 +202,7 @@ TwoThreeFour.prototype.insertNode = function (node, value) {
     node.insertIndex(value, newNode);
     node.color = this.view.colInvalid;
     newNode.color = this.view.colInvalid;
-    this.pushToHistory("minor", "E leaf overflow, split", this.root);
+    this.pushToHistory("minor", "node overflow, split", this.root);
     if (node.values.length >= 4) { //overflow
         this.pushToHistory("minor", "root overflow, split", this.root);
         var retNode = node.split();
@@ -260,6 +260,7 @@ TwoThreeFour.prototype.search = function () {
     this.draw();
 
     function whileLoop(tree, actNode) {
+        tree.resetColor(tree.root);
         setTimeout(function () {
             //find index of pointer leading to target:
             //assume its on first place
@@ -275,27 +276,28 @@ TwoThreeFour.prototype.search = function () {
             }
             actNode.neededKid = index;
             actNode = actNode.children[index];
-            actNode.color = this.view.colInvalid;
+            actNode.color = tree.view.colInvalid;
 
-            actNode.parent.color = this.view.colActive;
+            actNode.parent.color = tree.view.colActive;
             tree.draw();
             actNode.parent.neededKid = undefined;
-            if (actNode.children.length > 0)
-                whileLoop(tree, actNode);
-            else {
-                setTimeout(function () {
-                    for (var i = 0; i < actNode.values.length; i++) {
-                        if (actNode.values[i] == val) {
-                            actNode.color = this.view.colActive;
-                            tree.draw();
-                            return;
-                        }
+
+            setTimeout(function () {
+                for (var i = 0; i < actNode.values.length; i++) {
+                    if (actNode.values[i] == val) {
+                        actNode.color = tree.view.colActive;
+                        tree.draw();
+                        return;
                     }
-                    actNode.color = this.view.colNotFound;
+                }
+                if (actNode.children.length > 0)
+                    whileLoop(tree, actNode);
+                else {
+                    actNode.color = tree.view.colNotFound;
                     tree.draw();
                     return;
-                }, 1000);
-            }
+                }
+            }, 1000);
         }, 1000)
     }
 
